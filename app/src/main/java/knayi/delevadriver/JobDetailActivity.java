@@ -122,7 +122,14 @@ public class JobDetailActivity extends ActionBarActivity implements ObservableSc
     }
 
     @Override
+    protected void onPause() {
+        //overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+        super.onPause();
+    }
+
+    @Override
     public void onClick(View v) {
         this.finish();
+
     }
 }

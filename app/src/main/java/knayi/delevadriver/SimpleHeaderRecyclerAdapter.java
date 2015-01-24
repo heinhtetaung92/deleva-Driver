@@ -16,6 +16,8 @@
 
 package knayi.delevadriver;
 
+import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
@@ -37,12 +39,14 @@ public class SimpleHeaderRecyclerAdapter extends RecyclerView.Adapter<RecyclerVi
     private ArrayList<JobItem> mItems;
     private View mHeaderView;
     private static Context mContext;
+    private Activity activity;
 
     public SimpleHeaderRecyclerAdapter(Context context, ArrayList<JobItem> items, View headerView) {
         mInflater = LayoutInflater.from(context);
         mItems = items;
         mHeaderView = headerView;
         mContext = context;
+        activity = (Activity) context;
     }
 
     @Override
@@ -93,8 +97,13 @@ public class SimpleHeaderRecyclerAdapter extends RecyclerView.Adapter<RecyclerVi
 
             intent.putExtra("JobItem", mItems.get((Integer)v.getTag()));
 
+
             mContext.startActivity(intent);
-            Toast.makeText(mContext, String.valueOf(v.getTag()), Toast.LENGTH_SHORT).show();
+
+
+
+
+
         }
     }
 

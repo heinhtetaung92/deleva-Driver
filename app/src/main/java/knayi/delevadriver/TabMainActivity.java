@@ -44,6 +44,8 @@ public class TabMainActivity extends ActionBarActivity  implements ObservableScr
         mPager = (ViewPager) findViewById(R.id.pager);
         mPager.setAdapter(mPagerAdapter);
 
+        //overridePendingTransition(R.anim.slide_out_left, R.anim.slide_in_right);
+
         SlidingTabLayout slidingTabLayout = (SlidingTabLayout) findViewById(R.id.sliding_tabs);
         slidingTabLayout.setCustomTabView(R.layout.tab_indicator, android.R.id.text1);
         slidingTabLayout.setSelectedIndicatorColors(getResources().getColor(R.color.accent));
@@ -125,6 +127,12 @@ public class TabMainActivity extends ActionBarActivity  implements ObservableScr
             }
             propagateToolbarState(isShown, view, toolbarHeight);
         }
+    }
+
+    @Override
+    protected void onPause() {
+        //overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+        super.onPause();
     }
 
     private void propagateToolbarState(boolean isShown, View view, int toolbarHeight) {

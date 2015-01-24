@@ -69,6 +69,8 @@ public class ViewPagerTabRecyclerViewFragment extends Fragment {
 
             items.add(jobItem);
         }
+
+
         View headerView = LayoutInflater.from(parentActivity).inflate(R.layout.padding, null);
         recyclerView.setAdapter(new SimpleHeaderRecyclerAdapter(parentActivity, items, headerView));
 
