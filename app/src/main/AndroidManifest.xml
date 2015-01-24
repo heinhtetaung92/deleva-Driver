@@ -24,6 +24,13 @@
             </intent-filter>
 
         </activity>
+
+        <activity android:name=".JobDetailActivity"
+            android:label="JobDetail"
+            android:theme="@style/AppTheme.Toolbar">
+
+            </activity>
+
     </application>
 
 </manifest>

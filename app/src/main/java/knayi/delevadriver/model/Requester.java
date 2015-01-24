@@ -4,10 +4,10 @@
 
 package knayi.delevadriver.model;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Requester
-{
+public class Requester implements Serializable{
 
     private String _address;
     private String _business_type;

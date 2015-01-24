@@ -15,6 +15,9 @@ import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCal
 
 import java.util.ArrayList;
 
+import knayi.delevadriver.model.JobItem;
+import knayi.delevadriver.model.Requester;
+
 public class ViewPagerTabRecyclerViewFragment extends Fragment {
 
     public static final String ARG_INITIAL_POSITION = "ARG_INITIAL_POSITION";
@@ -27,9 +30,44 @@ public class ViewPagerTabRecyclerViewFragment extends Fragment {
         final ObservableRecyclerView recyclerView = (ObservableRecyclerView) view.findViewById(R.id.scroll);
         recyclerView.setLayoutManager(new LinearLayoutManager(parentActivity));
         recyclerView.setHasFixedSize(false);
-        ArrayList<String> items = new ArrayList<String>();
-        for (int i = 1; i <= 100; i++) {
-            items.add("Item " + i);
+        ArrayList<JobItem> items = new ArrayList<JobItem>();
+        JobItem jobItem;
+        for (int i = 1; i <= 30; i++) {
+            jobItem = new JobItem();
+            if (i % 2 == 0) {
+                jobItem.set_type("Medical");
+                jobItem.set_address("Inyar myaing St, Bahan, Yangon.");
+                jobItem.set_status("P");
+                jobItem.set_price("150");
+                jobItem.set_createAt("2015-01-12");
+
+                Requester requester = new Requester();
+                requester.set_name("Pizza Company");
+                requester.set_email("pizzacompany@example.com");
+                requester.set_business_type("pizza");
+                requester.set_mobile_number("09501001231");
+                requester.set_address("Dagon Center, Pyi Rd, May Ni Gone, Yangon");
+
+                jobItem.set_requester(requester);
+
+            } else {
+                jobItem.set_type("Food");
+                jobItem.set_address("Kabaaye Pagoda Rd, Bahan, Yangon.");
+                jobItem.set_status("A");
+                jobItem.set_price("200");
+                jobItem.set_createAt("2015-01-12");
+
+                Requester requester = new Requester();
+                requester.set_name("Pizza Company");
+                requester.set_email("pizzacompany@example.com");
+                requester.set_business_type("pizza");
+                requester.set_mobile_number("09501001231");
+                requester.set_address("Dagon Center, Pyi Rd, May Ni Gone, Yangon");
+
+                jobItem.set_requester(requester);
+            }
+
+            items.add(jobItem);
         }
         View headerView = LayoutInflater.from(parentActivity).inflate(R.layout.padding, null);
         recyclerView.setAdapter(new SimpleHeaderRecyclerAdapter(parentActivity, items, headerView));

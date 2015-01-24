@@ -17,26 +17,32 @@
 package knayi.delevadriver;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
-public class SimpleHeaderRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+import knayi.delevadriver.model.JobItem;
+
+public class SimpleHeaderRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements View.OnClickListener {
     private static final int VIEW_TYPE_HEADER = 0;
     private static final int VIEW_TYPE_ITEM = 1;
 
     private LayoutInflater mInflater;
-    private ArrayList<String> mItems;
+    private ArrayList<JobItem> mItems;
     private View mHeaderView;
+    private static Context mContext;
 
-    public SimpleHeaderRecyclerAdapter(Context context, ArrayList<String> items, View headerView) {
+    public SimpleHeaderRecyclerAdapter(Context context, ArrayList<JobItem> items, View headerView) {
         mInflater = LayoutInflater.from(context);
         mItems = items;
         mHeaderView = headerView;
+        mContext = context;
     }
 
     @Override
@@ -63,6 +69,8 @@ public class SimpleHeaderRecyclerAdapter extends RecyclerView.Adapter<RecyclerVi
 
             View v = mInflater.inflate(R.layout.custom_joblist, parent, false);
 
+            v.setOnClickListener(this);
+
             return new ItemViewHolder(v);
         }
     }
@@ -70,9 +78,23 @@ public class SimpleHeaderRecyclerAdapter extends RecyclerView.Adapter<RecyclerVi
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
         if (viewHolder instanceof ItemViewHolder) {
-            /*((ItemViewHolder) viewHolder).jobtype.setText(mItems.get(position - 1));
-            ((ItemViewHolder) viewHolder).jobaddress.setText(mItems.get(position - 1));
-            ((ItemViewHolder) viewHolder).jobstatus.setText(mItems.get(position - 1));*/
+            ((ItemViewHolder) viewHolder).jobtype.setText(mItems.get(position - 1).get_type());
+            ((ItemViewHolder) viewHolder).jobaddress.setText(mItems.get(position - 1).get_address());
+            ((ItemViewHolder) viewHolder).jobstatus.setText(mItems.get(position - 1).get_status());
+            ((ItemViewHolder) viewHolder).v.setTag(position - 1);
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        if(v.getTag() != null){
+
+            Intent intent = new Intent(mContext, JobDetailActivity.class);
+
+            intent.putExtra("JobItem", mItems.get((Integer)v.getTag()));
+
+            mContext.startActivity(intent);
+            Toast.makeText(mContext, String.valueOf(v.getTag()), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -84,13 +106,15 @@ public class SimpleHeaderRecyclerAdapter extends RecyclerView.Adapter<RecyclerVi
 
     static class ItemViewHolder extends RecyclerView.ViewHolder {
         TextView jobtype, jobaddress, jobstatus;
+        View v;
 
         public ItemViewHolder(View view) {
             super(view);
             jobtype = (TextView) view.findViewById(R.id.job_type);
             jobaddress = (TextView) view.findViewById(R.id.job_address);
             jobstatus = (TextView) view.findViewById(R.id.job_status);
-
+            jobstatus.setTextColor(mContext.getResources().getColor(android.R.color.holo_red_dark));
+            v = view;
         }
     }
 

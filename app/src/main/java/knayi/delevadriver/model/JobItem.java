@@ -4,13 +4,15 @@
 
 package knayi.delevadriver.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.List;
 
 // Referenced classes of package knayi.delevadriver.model:
 //            Requester
 
-public class JobItem
-{
+public class JobItem implements Parcelable{
 
     private String _address;
     private String _createAt;
@@ -23,11 +25,65 @@ public class JobItem
     private String _secret_code;
     private String _status;
     private String _type;
-    private String _v;
 
-    public JobItem()
-    {
+    public JobItem(){
+
     }
+
+    @Override
+    public int describeContents()
+    {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flag)
+    {
+        // TODO Auto-generated method stub
+        dest.writeString(_address);
+        dest.writeString(_createAt);
+        dest.writeString(_id);
+        dest.writeLong(_lan);
+        dest.writeLong(_lat);
+        dest.writeList(_pictures);
+        dest.writeString(_price);
+        dest.writeSerializable(_requester);
+        dest.writeString(_secret_code);
+        dest.writeString(_status);
+        dest.writeString(_type);
+
+    }
+    public JobItem(Parcel in)
+    {
+        this._address = in.readString();
+        this._createAt = in.readString();
+        this._id = in.readString();
+        this._lan = in.readLong();
+        this._lat = in.readLong();
+        in.readList(this._pictures, List.class.getClassLoader());
+        this._price = in.readString();
+        this._requester = (Requester) in.readSerializable();
+        this._secret_code = in.readString();
+        this._status = in.readString();
+        this._type = in.readString();
+    }
+
+    @SuppressWarnings("unchecked")
+    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
+        public JobItem createFromParcel(Parcel in)
+        {
+            return new JobItem(in);
+        }
+
+        public JobItem[] newArray(int size)
+        {
+            return new JobItem[size];
+        }
+    };
+
+
+
 
     public String get_address()
     {
@@ -84,10 +140,6 @@ public class JobItem
         return _type;
     }
 
-    public String get_v()
-    {
-        return _v;
-    }
 
     public void set_address(String s)
     {
@@ -140,8 +192,4 @@ public class JobItem
         _type = s;
     }
 
-    public void set_v(String s)
-    {
-        _v = s;
-    }
 }
