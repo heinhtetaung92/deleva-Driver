@@ -7,7 +7,6 @@ import android.view.MenuItem;
 
 import org.androidannotations.annotations.EActivity;
 
-@EActivity(R.layout.activity_login)
 public class LoginActivity extends ActionBarActivity {
 
 
