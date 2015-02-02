@@ -27,7 +27,8 @@
             android:layout_width="75dp"
             android:layout_height="75dp"
             android:layout_alignParentLeft="true"
-            android:background="@android:color/holo_blue_dark"/>
+            android:src="@drawable/download"
+            android:background="@android:color/white"/>
 
         <TextView
             android:id="@+id/job_type"

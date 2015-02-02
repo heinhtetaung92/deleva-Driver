@@ -1,6 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/scroll"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent" />
+<FrameLayout
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+        <com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView
+            android:id="@+id/scroll"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+
+    <com.pnikosis.materialishprogress.ProgressWheel
+        android:id="@+id/progress_wheel"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_gravity="center"
+        app:barColor="@color/primary"
+        app:progressIndeterminate="true"
+        android:visibility="invisible"/>
+
+    <RelativeLayout
+        android:id="@+id/connectionerrorlayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:visibility="invisible">
+
+
+        <TextView
+            android:id="@+id/tv1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Oops...\nCannot connect to Server"
+            android:textColor="@android:color/holo_red_light"
+            android:layout_alignParentTop="true"/>
+
+        <TextView
+            android:id="@+id/retryconnection"
+            android:layout_width="80dp"
+            android:layout_height="45dp"
+            android:text="Try Again"
+            android:layout_below="@+id/tv1"
+            android:background="@color/primary"
+            android:gravity="center"
+            android:layout_margin="10dp"/>
+
+        </RelativeLayout>
+
+    </FrameLayout>

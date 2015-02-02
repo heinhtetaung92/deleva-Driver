@@ -22,6 +22,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,7 +35,7 @@ import knayi.delevadriver.model.JobItem;
 
 public class JobDetailActivity extends ActionBarActivity implements ObservableScrollViewCallbacks, View.OnClickListener {
 
-    private View mImageView;
+    private ImageView mImageView;
     private View mToolbarView;
     private int mParallaxImageHeight;
 
@@ -60,7 +61,7 @@ public class JobDetailActivity extends ActionBarActivity implements ObservableSc
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setNavigationOnClickListener(this);
 
-        mImageView = findViewById(R.id.image);
+        mImageView = (ImageView) findViewById(R.id.image);
         mToolbarView = findViewById(R.id.toolbar);
         jobtype = (TextView) findViewById(R.id.jobdetail_type);
         jobprice = (TextView) findViewById(R.id.jobdetail_price);
@@ -83,9 +84,11 @@ public class JobDetailActivity extends ActionBarActivity implements ObservableSc
         mParallaxImageHeight = getResources().getDimensionPixelSize(R.dimen.parallax_image_height);
 
 
+        mImageView.setImageResource(R.drawable.download);
+
+
         jobtype.setText("Type : " + jobItem.get_type());
         jobprice.setText("Price : $" + jobItem.get_price());
-        jobstatus.setText("Status : " + jobItem.get_status());
         jobaddress.setText("Address : " + jobItem.get_address());
         jobcreatetime.setText("CreateTime : " + jobItem.get_createAt());
         requestertitle.setText("Requester");
@@ -94,6 +97,20 @@ public class JobDetailActivity extends ActionBarActivity implements ObservableSc
         requesterphone.setText("Phone : " + jobItem.get_requester().get_mobile_number());
         requesteremail.setText("Email : " + jobItem.get_requester().get_email());
         requesteraddress.setText("Address : " + jobItem.get_requester().get_address());
+
+
+        if(jobItem.get_status().equals("P")) {
+            jobstatus.setText("Status : Pending");
+        }
+        else if(jobItem.get_status().equals("A")) {
+            jobstatus.setText("Status : Accepted");
+        }
+        else if(jobItem.get_status().equals("F")) {
+            jobstatus.setText("Status : Finish");
+        }
+        else if(jobItem.get_status().equals("D")) {
+            jobstatus.setText("Status : Delete");
+        }
 
     }
 
@@ -121,11 +138,6 @@ public class JobDetailActivity extends ActionBarActivity implements ObservableSc
         view.setBackgroundColor(a + rgb);
     }
 
-    @Override
-    protected void onPause() {
-        //overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-        super.onPause();
-    }
 
     @Override
     public void onClick(View v) {

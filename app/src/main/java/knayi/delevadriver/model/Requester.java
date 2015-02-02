@@ -15,6 +15,7 @@ public class Requester implements Serializable{
     private String _email;
     private String _hash;
     private String _id;
+    private String _type;
     private long _lan;
     private long _lat;
     private String _mobile_number;
@@ -151,5 +152,13 @@ public class Requester implements Serializable{
     public void set_v(String s)
     {
         _v = s;
+    }
+
+    public String get_type() {
+        return _type;
+    }
+
+    public void set_type(String _type) {
+        this._type = _type;
     }
 }

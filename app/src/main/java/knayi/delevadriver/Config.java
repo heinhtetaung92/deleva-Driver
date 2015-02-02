@@ -8,9 +8,7 @@ package knayi.delevadriver;
 public class Config
 {
 
-    public static String PRODUCTS_BASE_URL = "";
+    public static String TOKEN_PREF = "drivertokenpref";
+    public static String TOKEN = "drivertoken";
 
-    public Config()
-    {
-    }
 }

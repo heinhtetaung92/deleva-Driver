@@ -1,5 +1,9 @@
 package knayi.delevadriver;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.drawable.Drawable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -8,13 +12,17 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.util.SparseArray;
+import android.view.ActionProvider;
+import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.SubMenu;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
-import com.github.ksoichiro.android.observablescrollview.ObservableScrollView;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
 import com.github.ksoichiro.android.observablescrollview.ScrollState;
 import com.github.ksoichiro.android.observablescrollview.Scrollable;
@@ -29,6 +37,7 @@ public class TabMainActivity extends ActionBarActivity  implements ObservableScr
     private int mBaseTranslationY;
     private ViewPager mPager;
     private NavigationAdapter mPagerAdapter;
+    SharedPreferences sPref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +45,7 @@ public class TabMainActivity extends ActionBarActivity  implements ObservableScr
         setContentView(R.layout.activity_tab_main);
 
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
+        sPref = getSharedPreferences(Config.TOKEN_PREF, Context.MODE_PRIVATE);
 
         mHeaderView = findViewById(R.id.header);
         ViewCompat.setElevation(mHeaderView, getResources().getDimension(R.dimen.toolbar_elevation));
@@ -71,6 +81,7 @@ public class TabMainActivity extends ActionBarActivity  implements ObservableScr
 
         propagateToolbarState(toolbarIsShown());
 
+
     }
 
 
@@ -79,6 +90,14 @@ public class TabMainActivity extends ActionBarActivity  implements ObservableScr
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         //getMenuInflater().inflate(R.menu.menu_tab_main, menu);
+
+
+        final MenuItem item = menu.add(0, 12, 0, "profile");
+        //menu.removeItem(12);
+        item.setIcon(R.drawable.profilemenu);
+        item.setShowAsAction(MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW
+                | MenuItem.SHOW_AS_ACTION_ALWAYS);
+
         return true;
     }
 
@@ -89,8 +108,17 @@ public class TabMainActivity extends ActionBarActivity  implements ObservableScr
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
+
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == 12) {
+
+            SharedPreferences.Editor editor = sPref.edit();
+            editor.putString(Config.TOKEN, null);
+            editor.commit();
+
+            startActivity(new Intent(this, LoginActivity.class));
+
+            Toast.makeText(getApplicationContext(), "Profile", Toast.LENGTH_SHORT).show();
             return true;
         }
 
@@ -105,8 +133,14 @@ public class TabMainActivity extends ActionBarActivity  implements ObservableScr
     private void propagateToolbarState(boolean isShown) {
         int toolbarHeight = mToolbarView.getHeight();
 
+
+
         // Set scrollY for the fragments that are not created yet
-        mPagerAdapter.setScrollY(isShown ? 0 : toolbarHeight);
+        int data = isShown ? 0 : toolbarHeight;
+
+        Log.i("toolbarshow", String.valueOf(toolbarIsShown()) + String.valueOf(data));
+
+        mPagerAdapter.setScrollY(data);
 
         // Set scrollY for the active fragments
         for (int i = 0; i < mPagerAdapter.getCount(); i++) {
@@ -129,11 +163,6 @@ public class TabMainActivity extends ActionBarActivity  implements ObservableScr
         }
     }
 
-    @Override
-    protected void onPause() {
-        //overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-        super.onPause();
-    }
 
     private void propagateToolbarState(boolean isShown, View view, int toolbarHeight) {
         Scrollable scrollView = (Scrollable) view.findViewById(R.id.scroll);
@@ -262,15 +291,24 @@ public class TabMainActivity extends ActionBarActivity  implements ObservableScr
         public Fragment getItem(int position) {
 
             Fragment f;
-            final int pattern = position % 2;
-            switch (pattern) {
-                case 0:
+            //final int pattern = position % 2;
+            switch (position) {
+
                 case 1:
-                default: {
-                    f = new ViewPagerTabRecyclerViewFragment();
+                    f = new MyJobsList();
                     if (0 < mScrollY) {
                         Bundle args = new Bundle();
-                        args.putInt(ViewPagerTabRecyclerViewFragment.ARG_INITIAL_POSITION, 1);
+                        args.putInt(MyJobsList.ARG_INITIAL_POSITION, 1);
+                        f.setArguments(args);
+                    }
+                    break;
+                case 0:
+
+                default: {
+                    f = new AvaliableJobsList();
+                    if (0 < mScrollY) {
+                        Bundle args = new Bundle();
+                        args.putInt(AvaliableJobsList.ARG_INITIAL_POSITION, 1);
                         f.setArguments(args);
                     }
                     break;

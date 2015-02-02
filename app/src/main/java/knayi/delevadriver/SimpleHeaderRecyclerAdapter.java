@@ -84,7 +84,19 @@ public class SimpleHeaderRecyclerAdapter extends RecyclerView.Adapter<RecyclerVi
         if (viewHolder instanceof ItemViewHolder) {
             ((ItemViewHolder) viewHolder).jobtype.setText(mItems.get(position - 1).get_type());
             ((ItemViewHolder) viewHolder).jobaddress.setText(mItems.get(position - 1).get_address());
-            ((ItemViewHolder) viewHolder).jobstatus.setText(mItems.get(position - 1).get_status());
+
+            if(mItems.get(position - 1).get_status().equals("P")) {
+                ((ItemViewHolder) viewHolder).jobstatus.setText("Pending");
+            }
+            else if(mItems.get(position - 1).get_status().equals("A")) {
+                ((ItemViewHolder) viewHolder).jobstatus.setText("Active");
+            }
+            else if(mItems.get(position - 1).get_status().equals("F")) {
+                ((ItemViewHolder) viewHolder).jobstatus.setText("Finish");
+            }
+            else if(mItems.get(position - 1).get_status().equals("D")) {
+                ((ItemViewHolder) viewHolder).jobstatus.setText("Delete");
+            }
             ((ItemViewHolder) viewHolder).v.setTag(position - 1);
         }
     }

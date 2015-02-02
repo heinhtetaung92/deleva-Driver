@@ -4,6 +4,8 @@
 
 package knayi.delevadriver.api;
 
+import android.util.Log;
+
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
@@ -17,6 +19,7 @@ import java.net.URI;
 import java.util.Collections;
 import java.util.concurrent.TimeUnit;
 
+import knayi.delevadriver.APIConfig;
 import knayi.delevadriver.Config;
 import knayi.delevadriver.model.ApiRequestInterceptor;
 import retrofit.RestAdapter;
@@ -40,7 +43,7 @@ public class AvaliableJobsAPI
 
     public AvaliableJobsAPI(){
 
-    ApiRequestInterceptor request_Interceptor = new ApiRequestInterceptor();
+    //ApiRequestInterceptor request_Interceptor = new ApiRequestInterceptor();
 
 
 
@@ -51,16 +54,14 @@ public class AvaliableJobsAPI
     final RestAdapter restAdapter = new
             RestAdapter.Builder().setLogLevel(RestAdapter.LogLevel.BASIC)
             .setLogLevel(RestAdapter.LogLevel.FULL)
-            .setEndpoint(Config.PRODUCTS_BASE_URL)
-            .setRequestInterceptor(request_Interceptor)
-
+            .setEndpoint(APIConfig.BASE_URL)
 
             .setClient(new OkClient(okHttpClient))
 
             .setLog(new RestAdapter.Log() {
                 @Override
                 public void log(String msg) {
-                    // Log.e("//////////////Product API////////////////////////", msg);
+                     Log.e("//////////////Product API////////////////////////", msg);
                 }
             })
             .setConverter(new StringConverter()) //Reply String result
