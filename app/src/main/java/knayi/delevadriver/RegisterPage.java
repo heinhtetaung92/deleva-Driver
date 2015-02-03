@@ -74,8 +74,9 @@ public class RegisterPage extends ActionBarActivity implements View.OnClickListe
         final String mail = email.getText().toString();
         final String pwd = password.getText().toString();
         progress.setVisibility(View.VISIBLE);
+        String location = GPSLocation.getLocation(this);
 
-        AvaliableJobsAPI.getInstance().getService().driverRegister(nam, mail, pwd, phone.getText().toString(), address.getText().toString(), "96,16", new Callback<String>() {
+        AvaliableJobsAPI.getInstance().getService().driverRegister(nam, mail, pwd, phone.getText().toString(), address.getText().toString(), location, new Callback<String>() {
             @Override
             public void success(String s, Response response) {
                 startActivity(new Intent(getApplicationContext(), LoginActivity.class));
@@ -95,6 +96,7 @@ public class RegisterPage extends ActionBarActivity implements View.OnClickListe
 
             }
         });
+
 
 
     }

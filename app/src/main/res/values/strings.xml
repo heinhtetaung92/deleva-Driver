@@ -12,5 +12,6 @@ Quam libero nulla netus eu porta curae, ut nulla bibendum facilisis et urna sed,
     <string name="title_activity_profile_page">ProfilePage</string>
     <string name="title_activity_login_page">LoginPage</string>
     <string name="title_activity_register_page">Registeration</string>
+    <string name="title_activity_profile">ProfileActivity</string>
 
 </resources>

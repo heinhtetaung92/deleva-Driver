@@ -43,8 +43,11 @@ public class TabMainActivity extends ActionBarActivity  implements ObservableScr
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tab_main);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
-        setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
+
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setIcon(R.drawable.ic_launcher);
         sPref = getSharedPreferences(Config.TOKEN_PREF, Context.MODE_PRIVATE);
 
         mHeaderView = findViewById(R.id.header);
@@ -112,13 +115,10 @@ public class TabMainActivity extends ActionBarActivity  implements ObservableScr
         //noinspection SimplifiableIfStatement
         if (id == 12) {
 
-            SharedPreferences.Editor editor = sPref.edit();
-            editor.putString(Config.TOKEN, null);
-            editor.commit();
 
-            startActivity(new Intent(this, LoginActivity.class));
 
-            Toast.makeText(getApplicationContext(), "Profile", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(this, ProfileActivity.class));
+
             return true;
         }
 

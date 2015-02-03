@@ -46,6 +46,7 @@ public class MyJobsList extends Fragment implements View.OnClickListener {
     View headerView;
     SharedPreferences sPref;
     ProgressWheel progress;
+    TextView tv1;
 
 
     @Override
@@ -61,7 +62,7 @@ public class MyJobsList extends Fragment implements View.OnClickListener {
         scrollview = view.findViewById(R.id.scroll);
         connectionerrorview = view.findViewById(R.id.connectionerrorlayout);
         retrycon = (TextView) view.findViewById(R.id.retryconnection);
-
+        tv1 = (TextView) view.findViewById(R.id.tv1);
         progress = (ProgressWheel) view.findViewById(R.id.progress_wheel);
 
 
@@ -81,6 +82,7 @@ public class MyJobsList extends Fragment implements View.OnClickListener {
             getDatafromServer();
 
         }else{
+            tv1.setText("Cannot connect to Server");
             scrollview.setVisibility(View.INVISIBLE);
             connectionerrorview.setVisibility(View.VISIBLE);
             progress.setVisibility(View.INVISIBLE);
@@ -123,11 +125,19 @@ public class MyJobsList extends Fragment implements View.OnClickListener {
                     Log.i("APIGet", "Success");
                     ArrayList<JobItem> items = (ArrayList<JobItem>) JSONToJob(s);
 
-                    recyclerView.setAdapter(new SimpleHeaderRecyclerAdapter(getActivity(), items, headerView));
+                    if(items.size() <= 0){
+                        tv1.setText("No history!");
+                        scrollview.setVisibility(View.INVISIBLE);
+                        connectionerrorview.setVisibility(View.VISIBLE);
+                        progress.setVisibility(View.INVISIBLE);
+                    }else{
+                        scrollview.setVisibility(View.VISIBLE);
+                        connectionerrorview.setVisibility(View.INVISIBLE);
+                        progress.setVisibility(View.INVISIBLE);
+                        recyclerView.setAdapter(new SimpleHeaderRecyclerAdapter(getActivity(), items, headerView));
+                    }
 
-                    scrollview.setVisibility(View.VISIBLE);
-                    connectionerrorview.setVisibility(View.INVISIBLE);
-                    progress.setVisibility(View.INVISIBLE);
+
                 }
 
                 @Override
@@ -231,7 +241,11 @@ public class MyJobsList extends Fragment implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        Toast.makeText(getActivity(), "MyJobs", Toast.LENGTH_SHORT).show();
+
+        scrollview.setVisibility(View.INVISIBLE);
+        connectionerrorview.setVisibility(View.INVISIBLE);
+        progress.setVisibility(View.VISIBLE);
+
         getDatafromServer();
     }
 }

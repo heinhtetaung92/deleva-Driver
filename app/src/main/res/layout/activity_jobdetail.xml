@@ -175,6 +175,7 @@
         android:layout_marginTop="20dp">
 
         <TextView
+            android:id="@+id/job_reject"
             android:layout_width="80dp"
             android:layout_height="45dp"
             android:text="Reject"
@@ -184,6 +185,7 @@
 
 
         <TextView
+            android:id="@+id/job_bit"
             android:layout_width="80dp"
             android:layout_height="45dp"
             android:text="Bit"
@@ -202,4 +204,14 @@
         android:minHeight="?attr/actionBarSize"
         app:popupTheme="@style/Theme.AppCompat.Light.DarkActionBar"
         app:theme="@style/Toolbar" />
+
+    <com.pnikosis.materialishprogress.ProgressWheel
+        android:id="@+id/progress_wheel"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_gravity="center"
+        app:barColor="@color/primary"
+        app:progressIndeterminate="true"
+        android:visibility="invisible"/>
+
 </FrameLayout>

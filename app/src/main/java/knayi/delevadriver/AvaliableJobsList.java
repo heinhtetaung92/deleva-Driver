@@ -46,8 +46,8 @@ public class AvaliableJobsList extends Fragment implements View.OnClickListener 
     ObservableRecyclerView recyclerView;
     View headerView;
     ProgressWheel progress;
-
     SharedPreferences sPref;
+    TextView tv1;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -62,6 +62,7 @@ public class AvaliableJobsList extends Fragment implements View.OnClickListener 
         connectionerrorview = view.findViewById(R.id.connectionerrorlayout);
         retrycon = (TextView) view.findViewById(R.id.retryconnection);
         progress = (ProgressWheel) view.findViewById(R.id.progress_wheel);
+        tv1 = (TextView) view.findViewById(R.id.tv1);
 
         retrycon.setOnClickListener(this);
 
@@ -75,14 +76,7 @@ public class AvaliableJobsList extends Fragment implements View.OnClickListener 
         progress.setVisibility(View.VISIBLE);
 
 
-    //    LocationManager locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-  //      Location loc = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
-        //locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1,1, this);
-        //String location = loc.getLongitude() + "," + loc.getLatitude();
-//        Log.i("Location", String.valueOf(loc.getLongitude() + "," + String.valueOf(loc.getLatitude())));
-
-//access_token=2fcdd45f8a63bd632a0dad3e24120ba49dd69610aec81bbd22fba1bae82721ee&location=96.1553629,16.8026865&timestamp=143124321212
 
         Log.i("Connection", String.valueOf(Connection.isOnline(getActivity())));
 
@@ -90,6 +84,8 @@ public class AvaliableJobsList extends Fragment implements View.OnClickListener 
             getDatafromServer();
 
         }else{
+
+            tv1.setText("Cannot connect to Server");
             scrollview.setVisibility(View.INVISIBLE);
             connectionerrorview.setVisibility(View.VISIBLE);
             progress.setVisibility(View.INVISIBLE);
@@ -126,19 +122,32 @@ public class AvaliableJobsList extends Fragment implements View.OnClickListener 
 
         String token = sPref.getString(Config.TOKEN, null);
 
-        if(token != null){
-            AvaliableJobsAPI.getInstance().getService().getJobListByLocation(token, "96.1483033,16.8093213", "143124321212", new retrofit.Callback<String>() {
+        Long tsLong = System.currentTimeMillis()/1000;
+        String ts = tsLong.toString();
+
+        String location = GPSLocation.getLocation(getActivity());
+
+        if(token != null && location != null){
+            AvaliableJobsAPI.getInstance().getService().getJobListByLocation(token, location, ts, new retrofit.Callback<String>() {
                 @Override
                 public void success(String s, Response response) {
 
                     Log.i("APIGet", "Success");
                     ArrayList<JobItem> items = (ArrayList<JobItem>) JSONToJob(s);
+                    Log.i("itemsize", String.valueOf(items.size()));
+                    if(items.size() == 0){
+                        tv1.setText("No avaliable job near you!");
+                        scrollview.setVisibility(View.INVISIBLE);
+                        connectionerrorview.setVisibility(View.VISIBLE);
+                        progress.setVisibility(View.INVISIBLE);
+                    }else{
+                        scrollview.setVisibility(View.VISIBLE);
+                        connectionerrorview.setVisibility(View.INVISIBLE);
+                        progress.setVisibility(View.INVISIBLE);
+                        recyclerView.setAdapter(new SimpleHeaderRecyclerAdapter(getActivity(), items, headerView));
+                    }
 
-                    recyclerView.setAdapter(new SimpleHeaderRecyclerAdapter(getActivity(), items, headerView));
 
-                    scrollview.setVisibility(View.VISIBLE);
-                    connectionerrorview.setVisibility(View.INVISIBLE);
-                    progress.setVisibility(View.INVISIBLE);
                 }
 
                 @Override
@@ -192,23 +201,6 @@ public class AvaliableJobsList extends Fragment implements View.OnClickListener 
                     JSONArray jsonarray1;
                     jsonobject1 = jsonarray.getJSONObject(i);
 
-
-                    /*
-                     * "type": "foods",
-            "address": "Inyar myaing St, Bahan, Yangon.",
-            "address_ll": [
-                96.1483033,
-                16.8093213
-            ],
-            "price": 150,
-            "__v": 0,
-            "reports": [],
-            "rejectMessage": [],
-            "status": "P",
-            "pictures": [],
-            "createAt": "2015-01-30T07:45:13.857Z"
-                      * */
-
                     jobitem.set_id(jsonobject1.getString("_id"));
                     jobitem.set_type(jsonobject1.getString("type"));
                     jobitem.set_address(jsonobject1.getString("address"));
@@ -258,7 +250,11 @@ public class AvaliableJobsList extends Fragment implements View.OnClickListener 
 
     @Override
     public void onClick(View v) {
-        Toast.makeText(getActivity(), "Avaliable Jobs Retry", Toast.LENGTH_SHORT).show();
+
+        scrollview.setVisibility(View.INVISIBLE);
+        connectionerrorview.setVisibility(View.INVISIBLE);
+        progress.setVisibility(View.VISIBLE);
+
         getDatafromServer();
     }
 }

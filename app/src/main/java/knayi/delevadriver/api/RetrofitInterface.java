@@ -28,11 +28,13 @@ public interface RetrofitInterface
     @GET(APIConfig.JOB_DETAIL_URL)
     public void getJobDetail(@Path("id") String id, @Query("access_token") String token, Callback<String> callback);
 
+    @FormUrlEncoded
     @POST(APIConfig.ACCEPT_JOB_URL)
-    public void acceptJob(@Path("id") String id, @Query("access_token") String token, Callback<String> callback);
+    public void acceptJob(@Path("id") String id, @Query("access_token") String token, @Field("location") String location, @Field("timestamp") String timestamp, Callback<String> callback);
 
+    @FormUrlEncoded
     @POST(APIConfig.REJECT_JOB_URL)
-    public void rejectJob(@Path("id") String id, @Query("access_token") String token,@Body TypedInput input, Callback<String> callback);
+    public void rejectJob(@Path("id") String id, @Query("access_token") String token,@Field("location") String location, @Field("timestamp") String timestamp, @Field("message") String message, Callback<String> callback);
 
     @POST(APIConfig.JOB_DONE_URL)
     public void jobDone(@Path("id") String id, @Query("access_token") String token, @Body TypedInput input, Callback<String> callback);
@@ -49,6 +51,9 @@ public interface RetrofitInterface
 
     @POST(APIConfig.GET_TOKEN)
     public void getToken(@Body TypedInput input, Callback<String> callback);
+
+    @GET(APIConfig.PROFILE_URL)
+    public void getProfile(@Query("access_token") String token, Callback<String> callback);
 
 }
 

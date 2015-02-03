@@ -20,6 +20,7 @@ public class APIConfig
     public static final String JOB_DONE_URL = "/jobs/{id}/done";
     public static final String DRIVER_REGISTER = "/register";
     public static final String GET_TOKEN = "/getToken";
+    public static final String PROFILE_URL = "/me";
 
     public static final String TEST_URL = "/seed_data";
 

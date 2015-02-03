@@ -33,9 +33,11 @@
             android:id="@+id/tv1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Oops...\nCannot connect to Server"
+            android:text="Cannot connect to Server"
             android:textColor="@android:color/holo_red_light"
-            android:layout_alignParentTop="true"/>
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginBottom="25dp"/>
 
         <TextView
             android:id="@+id/retryconnection"
@@ -44,6 +46,7 @@
             android:text="Try Again"
             android:layout_below="@+id/tv1"
             android:background="@color/primary"
+           android:layout_centerHorizontal="true"
             android:gravity="center"
             android:layout_margin="10dp"/>
 

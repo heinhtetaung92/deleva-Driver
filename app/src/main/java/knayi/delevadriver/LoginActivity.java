@@ -15,6 +15,8 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.pnikosis.materialishprogress.ProgressWheel;
+
 import org.androidannotations.annotations.EActivity;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -34,6 +36,7 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
 
     TextView login, register;
     EditText username, password;
+    ProgressWheel progress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +49,9 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
 
         username = (EditText) findViewById(R.id.login_username);
         password = (EditText) findViewById(R.id.login_password);
+
+        progress = (ProgressWheel) findViewById(R.id.progress_wheel);
+        progress.bringToFront();
 
         login.setOnClickListener(this);
         register.setOnClickListener(this);
@@ -64,6 +70,11 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
         switch(v.getId()){
 
             case R.id.login_button:
+
+                if(Connection.isOnline(this)){
+
+
+                progress.setVisibility(View.VISIBLE);
 
 
                 String uniquekey = Build.SERIAL + android.provider.Settings.Secure.getString(getApplicationContext().getContentResolver(),
@@ -112,6 +123,7 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
                         }catch(JSONException exp){
                             exp.printStackTrace();
                         }
+
                         startActivity(new Intent(getApplicationContext(), TabMainActivity.class));
                     }
 
@@ -128,7 +140,16 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
                     exp1.printStackTrace();
                 }
 
+                progress.setVisibility(View.INVISIBLE);
 
+
+                }
+                else{
+                    new SweetAlertDialog(LoginActivity.this, SweetAlertDialog.ERROR_TYPE)
+                            .setTitleText("Oops...")
+                            .setContentText("Conneciton is loss!")
+                            .show();
+                }
 
 
                 break;

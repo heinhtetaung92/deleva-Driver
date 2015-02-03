@@ -16,12 +16,18 @@
 
 package knayi.delevadriver;
 
+import android.app.Dialog;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,8 +36,19 @@ import com.github.ksoichiro.android.observablescrollview.ObservableScrollView;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
 import com.github.ksoichiro.android.observablescrollview.ScrollState;
 import com.nineoldandroids.view.ViewHelper;
+import com.pnikosis.materialishprogress.ProgressWheel;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
+import cn.pedant.SweetAlert.SweetAlertDialog;
+import knayi.delevadriver.api.AvaliableJobsAPI;
 import knayi.delevadriver.model.JobItem;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 public class JobDetailActivity extends ActionBarActivity implements ObservableScrollViewCallbacks, View.OnClickListener {
 
@@ -42,6 +59,11 @@ public class JobDetailActivity extends ActionBarActivity implements ObservableSc
     private JobItem jobItem;
 
     TextView jobtype, jobprice, jobstatus, jobaddress, jobcreatetime, requestertitle, requestername, requesterbusinesstype, requesterphone, requesteremail, requesteraddress;
+    TextView job_reject, job_bit;
+
+    SharedPreferences sPref;
+
+    ProgressWheel progress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +83,8 @@ public class JobDetailActivity extends ActionBarActivity implements ObservableSc
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setNavigationOnClickListener(this);
 
+        sPref = getSharedPreferences(Config.TOKEN_PREF, MODE_PRIVATE);
+
         mImageView = (ImageView) findViewById(R.id.image);
         mToolbarView = findViewById(R.id.toolbar);
         jobtype = (TextView) findViewById(R.id.jobdetail_type);
@@ -74,6 +98,15 @@ public class JobDetailActivity extends ActionBarActivity implements ObservableSc
         requesterphone = (TextView) findViewById(R.id.jobdetail_requesterphone);
         requesteremail = (TextView) findViewById(R.id.jobdetail_requesteremail);
         requesteraddress = (TextView) findViewById(R.id.jobdetail_requesteraddress);
+
+        progress = (ProgressWheel) findViewById(R.id.progress_wheel);
+        progress.bringToFront();
+
+        job_bit = (TextView) findViewById(R.id.job_bit);
+        job_reject = (TextView) findViewById(R.id.job_reject);
+
+        job_bit.setOnClickListener(this);
+        job_reject.setOnClickListener(this);
 
 
         setBackgroundAlpha(mToolbarView, 0, getResources().getColor(R.color.primary));
@@ -90,7 +123,14 @@ public class JobDetailActivity extends ActionBarActivity implements ObservableSc
         jobtype.setText("Type : " + jobItem.get_type());
         jobprice.setText("Price : $" + jobItem.get_price());
         jobaddress.setText("Address : " + jobItem.get_address());
-        jobcreatetime.setText("CreateTime : " + jobItem.get_createAt());
+
+        String date = getDateFromtimeFormat(jobItem.get_createAt());
+
+        if(date != null)
+            jobcreatetime.setText("CreateTime : " + date);
+        else
+            jobcreatetime.setText("CreateTime : not include");
+
         requestertitle.setText("Requester");
         requestername.setText("Name : " + jobItem.get_requester().get_name());
         requesterbusinesstype.setText("Business : " + jobItem.get_requester().get_business_type());
@@ -141,7 +181,142 @@ public class JobDetailActivity extends ActionBarActivity implements ObservableSc
 
     @Override
     public void onClick(View v) {
-        this.finish();
+
+        Long tsLong = System.currentTimeMillis()/1000;
+        final String ts = tsLong.toString();
+        final String token = sPref.getString(Config.TOKEN, null);
+        final String location = GPSLocation.getLocation(this);
+
+        switch(v.getId()){
+
+
+
+            case R.id.job_reject:
+
+
+
+                final Dialog msgDialog = new Dialog(JobDetailActivity.this);
+
+                msgDialog.setTitle("Why do u reject?");
+                msgDialog.setCancelable(true);
+                msgDialog.setContentView(R.layout.custom_dialog_reason);
+                final EditText message = (EditText) msgDialog.findViewById(R.id.messagebox);
+                Button submit = (Button) msgDialog.findViewById(R.id.submitbutton);
+
+                msgDialog.show();
+
+                submit.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        progress.setVisibility(View.VISIBLE);
+
+                        if(message.getText().toString().equals("") && message.getText().toString().equals(null)){
+                            Toast.makeText(getApplicationContext(), "Please input message to submit", Toast.LENGTH_SHORT).show();
+                        }else{
+                            msgDialog.dismiss();
+                            progress.setVisibility(View.VISIBLE);
+                            if(token == null){
+                                 new SweetAlertDialog(JobDetailActivity.this, SweetAlertDialog.WARNING_TYPE)
+                                        .setTitleText("")
+                                        .setContentText("Please Login again!")
+                                        .show();
+
+                                startActivity(new Intent(JobDetailActivity.this, LoginActivity.class));
+                                finish();
+
+
+                            }
+                            else{
+                                AvaliableJobsAPI.getInstance().getService().rejectJob(jobItem.get_id(), token, location, ts, message.getText().toString(), new Callback<String>() {
+                                    @Override
+                                    public void success(String s, Response response) {
+                                        progress.setVisibility(View.INVISIBLE);
+                                        startActivity(new Intent(JobDetailActivity.this, TabMainActivity.class));
+                                        finish();
+
+                                    }
+
+                                    @Override
+                                    public void failure(RetrofitError error) {
+                                        progress.setVisibility(View.INVISIBLE);
+                                        Toast.makeText(getApplicationContext(), "Something Went Wrong!", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+
+                            }
+                        }
+
+                    }
+                });
+
+
+
+
+                break;
+
+            case R.id.job_bit:
+
+
+                progress.setVisibility(View.VISIBLE);
+
+
+                if(token == null){
+                    new SweetAlertDialog(JobDetailActivity.this, SweetAlertDialog.WARNING_TYPE)
+                            .setTitleText("")
+                            .setContentText("Please Login again!")
+                            .show();
+
+                    startActivity(new Intent(JobDetailActivity.this, LoginActivity.class));
+                    finish();
+                }
+                else{
+                    AvaliableJobsAPI.getInstance().getService().acceptJob(jobItem.get_id(), token, location, ts, new Callback<String>() {
+                        @Override
+                        public void success(String s, Response response) {
+                            progress.setVisibility(View.INVISIBLE);
+                            startActivity(new Intent(JobDetailActivity.this, TabMainActivity.class));
+                            finish();
+                        }
+
+                        @Override
+                        public void failure(RetrofitError error) {
+                            progress.setVisibility(View.INVISIBLE);
+                            Toast.makeText(getApplicationContext(), "Something Went Wrong!", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+                }
+
+
+                break;
+
+            default:
+                JobDetailActivity.this.finish();
+                break;
+
+        }
+
+
 
     }
+
+    private String getDateFromtimeFormat(String timestring){
+
+        /*SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+        try {
+            Date date = sdf.parse(timestring);
+
+
+            return date.toString();
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }*/
+
+        return timestring.substring(0, 10);
+
+
+    }
+
 }
