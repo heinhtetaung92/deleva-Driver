@@ -17,14 +17,12 @@
 package knayi.delevadriver;
 
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -35,13 +33,15 @@ import android.widget.Toast;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollView;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
 import com.github.ksoichiro.android.observablescrollview.ScrollState;
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.nineoldandroids.view.ViewHelper;
 import com.pnikosis.materialishprogress.ProgressWheel;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import knayi.delevadriver.api.AvaliableJobsAPI;
@@ -50,7 +50,7 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-public class JobDetailActivity extends ActionBarActivity implements ObservableScrollViewCallbacks, View.OnClickListener {
+public class JobDetailActivity extends ActionBarActivity implements ObservableScrollViewCallbacks, View.OnClickListener, OnMapReadyCallback {
 
     private ImageView mImageView;
     private View mToolbarView;
@@ -64,6 +64,8 @@ public class JobDetailActivity extends ActionBarActivity implements ObservableSc
     SharedPreferences sPref;
 
     ProgressWheel progress;
+
+    MapFragment map;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,6 +100,9 @@ public class JobDetailActivity extends ActionBarActivity implements ObservableSc
         requesterphone = (TextView) findViewById(R.id.jobdetail_requesterphone);
         requesteremail = (TextView) findViewById(R.id.jobdetail_requesteremail);
         requesteraddress = (TextView) findViewById(R.id.jobdetail_requesteraddress);
+
+        map = (MapFragment) getFragmentManager().findFragmentById(R.id.map);
+        map.getMapAsync(this);
 
         progress = (ProgressWheel) findViewById(R.id.progress_wheel);
         progress.bringToFront();
@@ -319,4 +324,14 @@ public class JobDetailActivity extends ActionBarActivity implements ObservableSc
 
     }
 
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+
+
+        //googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(jobItem.get_lat(), jobItem.get_lon()), 11));
+        googleMap.addMarker(new MarkerOptions()
+                .position(new LatLng(jobItem.get_lat(), jobItem.get_lon()))
+                .title(jobItem.get_type()));
+
+    }
 }

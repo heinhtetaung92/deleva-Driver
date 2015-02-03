@@ -17,7 +17,7 @@ public class JobItem implements Parcelable{
     private String _address;
     private String _createAt;
     private String _id;
-    private long _lan;
+    private long _lon;
     private long _lat;
     private List _pictures;
     private int _price;
@@ -44,7 +44,7 @@ public class JobItem implements Parcelable{
         dest.writeString(_address);
         dest.writeString(_createAt);
         dest.writeString(_id);
-        dest.writeLong(_lan);
+        dest.writeLong(_lon);
         dest.writeLong(_lat);
         dest.writeList(_pictures);
         dest.writeInt(_price);
@@ -59,7 +59,7 @@ public class JobItem implements Parcelable{
         this._address = in.readString();
         this._createAt = in.readString();
         this._id = in.readString();
-        this._lan = in.readLong();
+        this._lon = in.readLong();
         this._lat = in.readLong();
         in.readList(this._pictures, List.class.getClassLoader());
         this._price = in.readInt();
@@ -100,9 +100,9 @@ public class JobItem implements Parcelable{
         return _id;
     }
 
-    public long get_lan()
+    public long get_lon()
     {
-        return _lan;
+        return _lon;
     }
 
     public long get_lat()
@@ -159,7 +159,7 @@ public class JobItem implements Parcelable{
     public void set_latAndlan(long l, long l1)
     {
         _lat = l;
-        _lan = l1;
+        _lon = l1;
     }
 
     public void set_pictures(List list)

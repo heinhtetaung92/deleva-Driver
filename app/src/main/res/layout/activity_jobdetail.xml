@@ -9,7 +9,8 @@
     <com.github.ksoichiro.android.observablescrollview.ObservableScrollView
         android:id="@+id/scroll"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_marginBottom="50dp">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -148,13 +149,18 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/jobdetail_requesteremail"
                 android:background="@android:color/white"
-                android:paddingBottom="80dp"
-                android:paddingLeft="@dimen/activity_horizontal_margin"
-                android:paddingRight="@dimen/activity_horizontal_margin"
-                android:paddingTop="@dimen/activity_vertical_margin"
-                android:layout_marginBottom="50dp"/>
+                android:padding="16dp"/>
 
 
+
+            <fragment
+                android:name="com.google.android.gms.maps.MapFragment"
+                android:id="@+id/map"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:layout_below="@id/jobdetail_requesteraddress"
+                android:layout_centerHorizontal="true"
+                />
 
 
 
@@ -172,7 +178,8 @@
         android:layout_gravity="bottom"
         android:padding="10dp"
         android:background="@android:color/white"
-        android:layout_marginTop="20dp">
+        android:layout_marginTop="20dp"
+        android:visibility="invisible">
 
         <TextView
             android:id="@+id/job_reject"
