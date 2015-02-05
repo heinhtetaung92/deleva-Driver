@@ -1,0 +1,111 @@
+<FrameLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:gravity="center">
+
+
+
+        <LinearLayout
+            android:id="@+id/update_layout1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_alignParentLeft="true">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="38dp"
+                android:gravity="center_vertical"
+                android:text="Name :"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="38dp"
+                android:gravity="center_vertical"
+                android:text="Email :"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="38dp"
+                android:gravity="center_vertical"
+                android:text="Mobile No :"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="38dp"
+                android:gravity="center_vertical"
+                android:text="Address :"/>
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/update_layout2"
+            android:layout_toRightOf="@id/update_layout1"
+            android:layout_width="wrap_content"
+            android:orientation="vertical"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp">
+
+
+            <EditText
+                android:id="@+id/update_name"
+                android:layout_width="200dp"
+                android:layout_height="35dp" />
+
+            <EditText
+                android:id="@+id/update_email"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:inputType="textEmailAddress"/>
+
+
+            <EditText
+
+                android:id="@+id/update_phone"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:inputType="phone"/>
+
+
+            <EditText
+
+                android:id="@+id/update_address"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/update_button"
+            android:layout_width="80dp"
+            android:layout_height="45dp"
+            android:text="Update"
+            android:gravity="center"
+            android:background="@color/primary"
+            android:layout_marginTop="10dp"
+            android:layout_alignRight="@id/update_layout2"
+            android:layout_below="@id/update_layout2"/>
+
+    </RelativeLayout>
+
+    <com.pnikosis.materialishprogress.ProgressWheel
+        android:id="@+id/update_progress_wheel"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_gravity="center"
+        app:barColor="@color/primary"
+        app:progressIndeterminate="true"
+        android:visibility="invisible"/>
+
+</FrameLayout>

@@ -23,6 +23,7 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -103,6 +104,16 @@ public class JobDetailActivity extends ActionBarActivity implements ObservableSc
 
         map = (MapFragment) getFragmentManager().findFragmentById(R.id.map);
         map.getMapAsync(this);
+        GoogleMap googleMap = map.getMap();
+
+        if(googleMap != null){
+            googleMap.addMarker(new MarkerOptions()
+                    .position(new LatLng(jobItem.get_lon(), jobItem.get_lat()))
+                    .title(jobItem.get_type()));
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(jobItem.get_lon(), jobItem.get_lat()), 13));
+            Log.i("MAP", "change to zoom");
+        }
+
 
         progress = (ProgressWheel) findViewById(R.id.progress_wheel);
         progress.bringToFront();
@@ -329,9 +340,7 @@ public class JobDetailActivity extends ActionBarActivity implements ObservableSc
 
 
         //googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(jobItem.get_lat(), jobItem.get_lon()), 11));
-        googleMap.addMarker(new MarkerOptions()
-                .position(new LatLng(jobItem.get_lat(), jobItem.get_lon()))
-                .title(jobItem.get_type()));
+
 
     }
 }

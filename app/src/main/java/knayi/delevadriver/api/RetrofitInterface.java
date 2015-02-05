@@ -11,6 +11,7 @@ import retrofit.http.Body;
 import retrofit.http.Field;
 import retrofit.http.FormUrlEncoded;
 import retrofit.http.GET;
+import retrofit.http.PATCH;
 import retrofit.http.POST;
 import retrofit.http.Path;
 import retrofit.http.Query;
@@ -54,6 +55,15 @@ public interface RetrofitInterface
 
     @GET(APIConfig.PROFILE_URL)
     public void getProfile(@Query("access_token") String token, Callback<String> callback);
+
+    @FormUrlEncoded
+    @PATCH(APIConfig.PROFILE_URL)
+    public void updateProfile(@Query("access_token") String token,
+                              @Field("name") String name,
+                              @Field("email") String email,
+                              @Field("mobile_number") String mobileno,
+                              @Field("address") String address,
+                              Callback<String> callback);
 
 }
 

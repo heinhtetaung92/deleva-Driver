@@ -125,6 +125,8 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
                         }
 
                         startActivity(new Intent(getApplicationContext(), TabMainActivity.class));
+
+                        finish();
                     }
 
                     @Override
