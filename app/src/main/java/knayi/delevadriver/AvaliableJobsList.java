@@ -125,10 +125,10 @@ public class AvaliableJobsList extends Fragment implements View.OnClickListener 
         Long tsLong = System.currentTimeMillis()/1000;
         String ts = tsLong.toString();
 
-        String location = GPSLocation.getLocation(getActivity());
+        String location = null;//GPSLocation.getLocation(getActivity());
 
         if(token != null && location != null){
-            AvaliableJobsAPI.getInstance().getService().getJobListByLocation(token, "96.1458786,16.8037958", ts, new retrofit.Callback<String>() {
+            AvaliableJobsAPI.getInstance().getService().getJobListByLocation(token, "96.275320,16.805588", ts, new retrofit.Callback<String>() {
                 @Override
                 public void success(String s, Response response) {
 

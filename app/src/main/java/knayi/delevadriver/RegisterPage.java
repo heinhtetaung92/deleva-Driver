@@ -1,6 +1,9 @@
 package knayi.delevadriver;
 
+import android.content.Context;
 import android.content.Intent;
+import android.location.Location;
+import android.location.LocationManager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -9,21 +12,28 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.location.LocationListener;
 import com.pnikosis.materialishprogress.ProgressWheel;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import knayi.delevadriver.api.AvaliableJobsAPI;
+import knayi.delevadriver.gpslocation.GPSLocation;
+import knayi.delevadriver.gpslocation.GPSTracker;
+import knayi.delevadriver.gpslocation.LidaComLocalizacao;
+import knayi.delevadriver.gpslocation.MyLocation;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 
-public class RegisterPage extends ActionBarActivity implements View.OnClickListener {
+public class RegisterPage extends ActionBarActivity implements View.OnClickListener, LocationListener {
 
     TextView register;
     EditText name, email, password, phone, address;
     ProgressWheel progress;
+    GPSLocation gpsconnector;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +52,8 @@ public class RegisterPage extends ActionBarActivity implements View.OnClickListe
 
         register.setOnClickListener(this);
 
+
+
     }
 
 
@@ -50,6 +62,11 @@ public class RegisterPage extends ActionBarActivity implements View.OnClickListe
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_register_page, menu);
         return true;
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
     }
 
     @Override
@@ -70,7 +87,22 @@ public class RegisterPage extends ActionBarActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
 
-        String nam = name.getText().toString();
+        gpsconnector = new GPSLocation(this);
+
+        gpsconnector.Start();
+        String loc = gpsconnector.displayLocation();
+
+        if(loc == null){
+            loc = "(Couldn't get the location. Make sure location is enabled on the device)";
+            gpsconnector.Start();
+            gpsconnector.startLocationUpdates();
+        }
+
+        Toast.makeText(this, loc, Toast.LENGTH_SHORT).show();
+        Log.i("Location", loc);
+
+
+        /*String nam = name.getText().toString();
         final String mail = email.getText().toString();
         final String pwd = password.getText().toString();
         progress.setVisibility(View.VISIBLE);
@@ -95,8 +127,23 @@ public class RegisterPage extends ActionBarActivity implements View.OnClickListe
 
 
             }
-        });
+        });*/
 
+
+
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+
+        if(location!=null) {
+            Toast.makeText(this, String.valueOf(location.getLongitude()),
+                    Toast.LENGTH_SHORT).show();
+
+            gpsconnector.stopLocationUpdates();
+        }else{
+
+        }
 
 
     }

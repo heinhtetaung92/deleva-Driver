@@ -4,7 +4,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@android:color/white">
 
     <com.github.ksoichiro.android.observablescrollview.ObservableScrollView
         android:id="@+id/scroll"
@@ -29,127 +30,273 @@
                 android:layout_height="@dimen/parallax_image_height"
                 android:minHeight="@dimen/parallax_image_height" />
 
+
+
+                <TextView
+                    android:id="@+id/jobdetail_type"
+                    android:layout_width="110dp"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/white"
+                    android:text="Type"
+                    android:layout_below="@id/anchor"
+                    android:paddingBottom="@dimen/activity_vertical_margin"
+                    android:paddingLeft="@dimen/activity_horizontal_margin"
+                    android:paddingRight="@dimen/activity_horizontal_margin"
+                    android:paddingTop="@dimen/activity_vertical_margin" />
+
             <TextView
-                android:id="@+id/jobdetail_type"
+                android:id="@+id/jobdetail_type_value"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/anchor"
                 android:background="@android:color/white"
+                android:layout_toRightOf="@id/jobdetail_type"
                 android:paddingBottom="@dimen/activity_vertical_margin"
                 android:paddingLeft="@dimen/activity_horizontal_margin"
                 android:paddingRight="@dimen/activity_horizontal_margin"
                 android:paddingTop="@dimen/activity_vertical_margin" />
 
+                <TextView
+                    android:id="@+id/jobdetail_price"
+                    android:layout_width="110dp"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/jobdetail_type_value"
+                    android:background="@android:color/white"
+                    android:text="Price"
+                    android:paddingBottom="@dimen/activity_vertical_margin"
+                    android:paddingLeft="@dimen/activity_horizontal_margin"
+                    android:paddingRight="@dimen/activity_horizontal_margin"
+                    android:paddingTop="@dimen/activity_vertical_margin" />
+
             <TextView
-                android:id="@+id/jobdetail_price"
+                android:id="@+id/jobdetail_price_value"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/jobdetail_type"
+                android:layout_below="@id/jobdetail_type_value"
                 android:background="@android:color/white"
+                android:layout_toRightOf="@id/jobdetail_price"
                 android:paddingBottom="@dimen/activity_vertical_margin"
                 android:paddingLeft="@dimen/activity_horizontal_margin"
                 android:paddingRight="@dimen/activity_horizontal_margin"
                 android:paddingTop="@dimen/activity_vertical_margin" />
 
+                <TextView
+                    android:id="@+id/jobdetail_status"
+                    android:layout_width="110dp"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/jobdetail_price_value"
+                    android:background="@android:color/white"
+                    android:text="Status"
+                    android:paddingBottom="@dimen/activity_vertical_margin"
+                    android:paddingLeft="@dimen/activity_horizontal_margin"
+                    android:paddingRight="@dimen/activity_horizontal_margin"
+                    android:paddingTop="@dimen/activity_vertical_margin" />
+
             <TextView
-                android:id="@+id/jobdetail_status"
+                android:id="@+id/jobdetail_status_value"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/jobdetail_price"
+                android:layout_below="@id/jobdetail_price_value"
                 android:background="@android:color/white"
+                android:layout_toRightOf="@id/jobdetail_status"
                 android:paddingBottom="@dimen/activity_vertical_margin"
                 android:paddingLeft="@dimen/activity_horizontal_margin"
                 android:paddingRight="@dimen/activity_horizontal_margin"
                 android:paddingTop="@dimen/activity_vertical_margin" />
 
+                <TextView
+                    android:id="@+id/jobdetail_address"
+                    android:layout_width="110dp"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/jobdetail_status_value"
+                    android:background="@android:color/white"
+                    android:text="Address"
+                    android:paddingBottom="@dimen/activity_vertical_margin"
+                    android:paddingLeft="@dimen/activity_horizontal_margin"
+                    android:paddingRight="@dimen/activity_horizontal_margin"
+                    android:paddingTop="@dimen/activity_vertical_margin" />
+
             <TextView
-                android:id="@+id/jobdetail_address"
+                android:id="@+id/jobdetail_address_value"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/jobdetail_status"
+                android:layout_below="@id/jobdetail_status_value"
                 android:background="@android:color/white"
+                android:layout_toRightOf="@id/jobdetail_address"
                 android:paddingBottom="@dimen/activity_vertical_margin"
                 android:paddingLeft="@dimen/activity_horizontal_margin"
                 android:paddingRight="@dimen/activity_horizontal_margin"
                 android:paddingTop="@dimen/activity_vertical_margin" />
 
-            <TextView
-                android:id="@+id/jobdetail_createtime"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/jobdetail_address"
-                android:background="@android:color/white"
-                android:paddingBottom="@dimen/activity_vertical_margin"
-                android:paddingLeft="@dimen/activity_horizontal_margin"
-                android:paddingRight="@dimen/activity_horizontal_margin"
-                android:paddingTop="@dimen/activity_vertical_margin" />
-
-
-
-            <TextView
-                android:id="@+id/jobdetail_requestertitle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/jobdetail_createtime"
-                android:background="@android:color/white"
-                android:paddingBottom="@dimen/activity_vertical_margin"
-                android:paddingLeft="@dimen/activity_horizontal_margin"
-                android:paddingRight="@dimen/activity_horizontal_margin"
-                android:paddingTop="@dimen/activity_vertical_margin" />
+                <TextView
+                    android:id="@+id/jobdetail_createtime"
+                    android:layout_width="110dp"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/jobdetail_address_value"
+                    android:background="@android:color/white"
+                    android:text="CreateTime"
+                    android:paddingBottom="@dimen/activity_vertical_margin"
+                    android:paddingLeft="@dimen/activity_horizontal_margin"
+                    android:paddingRight="@dimen/activity_horizontal_margin"
+                    android:paddingTop="@dimen/activity_vertical_margin" />
 
             <TextView
-                android:id="@+id/jobdetail_requestername"
+                android:id="@+id/jobdetail_createtime_value"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/jobdetail_requestertitle"
+                android:layout_below="@id/jobdetail_address_value"
                 android:background="@android:color/white"
-                android:paddingBottom="@dimen/activity_vertical_margin"
-                android:paddingLeft="@dimen/activity_horizontal_margin"
-                android:paddingRight="@dimen/activity_horizontal_margin"
-                android:paddingTop="@dimen/activity_vertical_margin" />
-
-            <TextView
-                android:id="@+id/jobdetail_requesterbusinesstype"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/jobdetail_requestername"
-                android:background="@android:color/white"
-                android:paddingBottom="@dimen/activity_vertical_margin"
-                android:paddingLeft="@dimen/activity_horizontal_margin"
-                android:paddingRight="@dimen/activity_horizontal_margin"
-                android:paddingTop="@dimen/activity_vertical_margin" />
-
-            <TextView
-                android:id="@+id/jobdetail_requesterphone"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/jobdetail_requesterbusinesstype"
-                android:background="@android:color/white"
-                android:paddingBottom="@dimen/activity_vertical_margin"
-                android:paddingLeft="@dimen/activity_horizontal_margin"
-                android:paddingRight="@dimen/activity_horizontal_margin"
-                android:paddingTop="@dimen/activity_vertical_margin" />
-
-
-            <TextView
-                android:id="@+id/jobdetail_requesteremail"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/jobdetail_requesterphone"
-                android:background="@android:color/white"
+                android:layout_toRightOf="@id/jobdetail_createtime"
                 android:paddingBottom="@dimen/activity_vertical_margin"
                 android:paddingLeft="@dimen/activity_horizontal_margin"
                 android:paddingRight="@dimen/activity_horizontal_margin"
                 android:paddingTop="@dimen/activity_vertical_margin" />
 
 
+
+                <TextView
+                    android:id="@+id/jobdetail_requestertitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/jobdetail_createtime_value"
+                    android:background="@android:color/white"
+                    android:text="Requester"
+                    android:textSize="19dp"
+                    android:paddingBottom="@dimen/activity_vertical_margin"
+                    android:paddingLeft="@dimen/activity_horizontal_margin"
+                    android:paddingRight="@dimen/activity_horizontal_margin"
+                    android:paddingTop="@dimen/activity_vertical_margin" />
+
             <TextView
-                android:id="@+id/jobdetail_requesteraddress"
+                android:id="@+id/jobdetail_requestertitle_value"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/jobdetail_requesteremail"
+                android:layout_below="@id/jobdetail_createtime_value"
                 android:background="@android:color/white"
-                android:padding="16dp"/>
+                android:layout_toRightOf="@id/jobdetail_requestertitle"
+                android:paddingBottom="@dimen/activity_vertical_margin"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin"
+                android:paddingTop="@dimen/activity_vertical_margin" />
+
+                <TextView
+                    android:id="@+id/jobdetail_requestername"
+                    android:layout_width="110dp"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/jobdetail_requestertitle_value"
+                    android:background="@android:color/white"
+                    android:text="Name"
+                    android:paddingBottom="@dimen/activity_vertical_margin"
+                    android:paddingLeft="@dimen/activity_horizontal_margin"
+                    android:paddingRight="@dimen/activity_horizontal_margin"
+                    android:paddingTop="@dimen/activity_vertical_margin" />
+
+            <TextView
+                android:id="@+id/jobdetail_requestername_value"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/jobdetail_requestertitle_value"
+                android:background="@android:color/white"
+                android:layout_toRightOf="@id/jobdetail_requestername"
+                android:paddingBottom="@dimen/activity_vertical_margin"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin"
+                android:paddingTop="@dimen/activity_vertical_margin" />
+
+                <TextView
+                    android:id="@+id/jobdetail_requesterbusinesstype"
+                    android:layout_width="110dp"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/jobdetail_requestername_value"
+                    android:background="@android:color/white"
+                    android:text="Business"
+                    android:paddingBottom="@dimen/activity_vertical_margin"
+                    android:paddingLeft="@dimen/activity_horizontal_margin"
+                    android:paddingRight="@dimen/activity_horizontal_margin"
+                    android:paddingTop="@dimen/activity_vertical_margin" />
+
+            <TextView
+                android:id="@+id/jobdetail_requesterbusinesstype_value"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/jobdetail_requestername_value"
+                android:background="@android:color/white"
+                android:layout_toRightOf="@id/jobdetail_requesterbusinesstype"
+                android:paddingBottom="@dimen/activity_vertical_margin"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin"
+                android:paddingTop="@dimen/activity_vertical_margin" />
+
+                <TextView
+                    android:id="@+id/jobdetail_requesterphone"
+                    android:layout_width="110dp"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/jobdetail_requesterbusinesstype_value"
+                    android:background="@android:color/white"
+                    android:text="Phone"
+                    android:paddingBottom="@dimen/activity_vertical_margin"
+                    android:paddingLeft="@dimen/activity_horizontal_margin"
+                    android:paddingRight="@dimen/activity_horizontal_margin"
+                    android:paddingTop="@dimen/activity_vertical_margin" />
+
+            <TextView
+                android:id="@+id/jobdetail_requesterphone_value"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/jobdetail_requesterbusinesstype_value"
+                android:background="@android:color/white"
+                android:layout_toRightOf="@id/jobdetail_requesterphone"
+                android:paddingBottom="@dimen/activity_vertical_margin"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin"
+                android:paddingTop="@dimen/activity_vertical_margin" />
+
+
+                <TextView
+                    android:id="@+id/jobdetail_requesteremail"
+                    android:layout_width="110dp"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/jobdetail_requesterphone_value"
+                    android:background="@android:color/white"
+                    android:text="Email"
+                    android:paddingBottom="@dimen/activity_vertical_margin"
+                    android:paddingLeft="@dimen/activity_horizontal_margin"
+                    android:paddingRight="@dimen/activity_horizontal_margin"
+                    android:paddingTop="@dimen/activity_vertical_margin" />
+
+            <TextView
+                android:id="@+id/jobdetail_requesteremail_value"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/jobdetail_requesterphone_value"
+                android:background="@android:color/white"
+                android:layout_toRightOf="@id/jobdetail_requesteremail"
+                android:paddingBottom="@dimen/activity_vertical_margin"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin"
+                android:paddingTop="@dimen/activity_vertical_margin" />
+
+
+                <TextView
+                    android:id="@+id/jobdetail_requesteraddress"
+                    android:layout_width="110dp"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/jobdetail_requesteremail_value"
+                    android:background="@android:color/white"
+                    android:text="Address"
+                    android:padding="16dp"/>
+
+
+
+                <TextView
+                    android:id="@+id/jobdetail_requesteraddress_value"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@id/jobdetail_requesteraddress"
+                    android:layout_below="@id/jobdetail_requesteremail_value"
+                    android:background="@android:color/white"
+                    android:padding="16dp"/>
+
 
 
 
@@ -158,9 +305,9 @@
                 android:id="@+id/map"
                 android:layout_width="match_parent"
                 android:layout_height="250dp"
-                android:layout_below="@id/jobdetail_requesteraddress"
                 android:layout_centerHorizontal="true"
                 android:layout_margin="15dp"
+                android:layout_below="@id/jobdetail_requesteraddress_value"
                 android:background="@android:color/white"/>
 
 
@@ -188,6 +335,7 @@
             android:layout_height="45dp"
             android:text="Reject"
             android:gravity="center"
+            android:layout_weight="1"
             android:background="@android:color/holo_red_light"
             android:layout_marginRight="15dp"/>
 
@@ -198,6 +346,7 @@
             android:layout_height="45dp"
             android:text="Bit"
             android:gravity="center"
+            android:layout_weight="1"
             android:background="@android:color/holo_green_light"/>
 
 

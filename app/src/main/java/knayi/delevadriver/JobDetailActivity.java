@@ -90,17 +90,17 @@ public class JobDetailActivity extends ActionBarActivity implements ObservableSc
 
         mImageView = (ImageView) findViewById(R.id.image);
         mToolbarView = findViewById(R.id.toolbar);
-        jobtype = (TextView) findViewById(R.id.jobdetail_type);
-        jobprice = (TextView) findViewById(R.id.jobdetail_price);
-        jobstatus = (TextView) findViewById(R.id.jobdetail_status);
-        jobaddress = (TextView) findViewById(R.id.jobdetail_address);
-        jobcreatetime = (TextView) findViewById(R.id.jobdetail_createtime);
-        requestertitle = (TextView) findViewById(R.id.jobdetail_requestertitle);
-        requestername = (TextView) findViewById(R.id.jobdetail_requestername);
-        requesterbusinesstype = (TextView) findViewById(R.id.jobdetail_requesterbusinesstype);
-        requesterphone = (TextView) findViewById(R.id.jobdetail_requesterphone);
-        requesteremail = (TextView) findViewById(R.id.jobdetail_requesteremail);
-        requesteraddress = (TextView) findViewById(R.id.jobdetail_requesteraddress);
+        jobtype = (TextView) findViewById(R.id.jobdetail_type_value);
+        jobprice = (TextView) findViewById(R.id.jobdetail_price_value);
+        jobstatus = (TextView) findViewById(R.id.jobdetail_status_value);
+        jobaddress = (TextView) findViewById(R.id.jobdetail_address_value);
+        jobcreatetime = (TextView) findViewById(R.id.jobdetail_createtime_value);
+        requestertitle = (TextView) findViewById(R.id.jobdetail_requestertitle_value);
+        requestername = (TextView) findViewById(R.id.jobdetail_requestername_value);
+        requesterbusinesstype = (TextView) findViewById(R.id.jobdetail_requesterbusinesstype_value);
+        requesterphone = (TextView) findViewById(R.id.jobdetail_requesterphone_value);
+        requesteremail = (TextView) findViewById(R.id.jobdetail_requesteremail_value);
+        requesteraddress = (TextView) findViewById(R.id.jobdetail_requesteraddress_value);
 
         map = (MapFragment) getFragmentManager().findFragmentById(R.id.map);
         map.getMapAsync(this);
@@ -136,36 +136,35 @@ public class JobDetailActivity extends ActionBarActivity implements ObservableSc
         mImageView.setImageResource(R.drawable.download);
 
 
-        jobtype.setText("Type : " + jobItem.get_type());
-        jobprice.setText("Price : $" + jobItem.get_price());
-        jobaddress.setText("Address : " + jobItem.get_address());
+        jobtype.setText(": " + jobItem.get_type());
+        jobprice.setText(": $" + jobItem.get_price());
+        jobaddress.setText(": " + jobItem.get_address());
 
         String date = getDateFromtimeFormat(jobItem.get_createAt());
 
         if(date != null)
-            jobcreatetime.setText("CreateTime : " + date);
+            jobcreatetime.setText(": " + date);
         else
-            jobcreatetime.setText("CreateTime : not include");
+            jobcreatetime.setText(": not include");
 
-        requestertitle.setText("Requester");
-        requestername.setText("Name : " + jobItem.get_requester().get_name());
-        requesterbusinesstype.setText("Business : " + jobItem.get_requester().get_business_type());
-        requesterphone.setText("Phone : " + jobItem.get_requester().get_mobile_number());
-        requesteremail.setText("Email : " + jobItem.get_requester().get_email());
-        requesteraddress.setText("Address : " + jobItem.get_requester().get_address());
+        requestername.setText(": " + jobItem.get_requester().get_name());
+        requesterbusinesstype.setText(": " + jobItem.get_requester().get_business_type());
+        requesterphone.setText(": " + jobItem.get_requester().get_mobile_number());
+        requesteremail.setText(": " + jobItem.get_requester().get_email());
+        requesteraddress.setText(": " + jobItem.get_requester().get_address());
 
 
         if(jobItem.get_status().equals("P")) {
-            jobstatus.setText("Status : Pending");
+            jobstatus.setText(": Pending");
         }
         else if(jobItem.get_status().equals("A")) {
-            jobstatus.setText("Status : Accepted");
+            jobstatus.setText(": Accepted");
         }
         else if(jobItem.get_status().equals("F")) {
-            jobstatus.setText("Status : Finish");
+            jobstatus.setText(": Finish");
         }
         else if(jobItem.get_status().equals("D")) {
-            jobstatus.setText("Status : Delete");
+            jobstatus.setText(": Delete");
         }
 
     }
@@ -201,7 +200,7 @@ public class JobDetailActivity extends ActionBarActivity implements ObservableSc
         Long tsLong = System.currentTimeMillis()/1000;
         final String ts = tsLong.toString();
         final String token = sPref.getString(Config.TOKEN, null);
-        final String location = GPSLocation.getLocation(this);
+        final String location = null;//GPSLocation.getLocation(this);
 
         switch(v.getId()){
 
