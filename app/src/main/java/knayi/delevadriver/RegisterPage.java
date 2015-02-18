@@ -14,7 +14,11 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 import com.pnikosis.materialishprogress.ProgressWheel;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
@@ -28,12 +32,24 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 
-public class RegisterPage extends ActionBarActivity implements View.OnClickListener, LocationListener {
+public class RegisterPage extends ActionBarActivity implements View.OnClickListener,
+                                                                    GoogleApiClient.ConnectionCallbacks,
+                                                                    GoogleApiClient.OnConnectionFailedListener,
+                                                                    LocationListener{
 
     TextView register;
     EditText name, email, password, phone, address;
     ProgressWheel progress;
-    GPSLocation gpsconnector;
+    GoogleApiClient mGoogleApiClient;
+    LocationRequest mLocationRequest;
+
+    Location mLastLocation = null;
+
+    public static final long UPDATE_INTERVAL_IN_MILLISECONDS = 10000;
+
+
+    public static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS =
+            UPDATE_INTERVAL_IN_MILLISECONDS / 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +67,13 @@ public class RegisterPage extends ActionBarActivity implements View.OnClickListe
         progress = (ProgressWheel) findViewById(R.id.register_progress_wheel);
 
         register.setOnClickListener(this);
+
+        this.buildGoogleApiClient();
+        mGoogleApiClient.connect();
+
+        if (mGoogleApiClient.isConnected()) {
+            startLocationUpdates();
+        }
 
 
 
@@ -87,26 +110,22 @@ public class RegisterPage extends ActionBarActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
 
-        gpsconnector = new GPSLocation(this);
 
-        gpsconnector.Start();
-        String loc = gpsconnector.displayLocation();
+        Log.i("Location", String.valueOf(mLastLocation.getLongitude()) + ", " + String.valueOf(mLastLocation.getLatitude()));
 
-        if(loc == null){
-            loc = "(Couldn't get the location. Make sure location is enabled on the device)";
-            gpsconnector.Start();
-            gpsconnector.startLocationUpdates();
-        }
-
-        Toast.makeText(this, loc, Toast.LENGTH_SHORT).show();
-        Log.i("Location", loc);
-
-
-        /*String nam = name.getText().toString();
+        String nam = name.getText().toString();
         final String mail = email.getText().toString();
         final String pwd = password.getText().toString();
         progress.setVisibility(View.VISIBLE);
-        String location = GPSLocation.getLocation(this);
+
+        String location = null;
+        if(mLastLocation != null)
+            location = String.valueOf(mLastLocation.getLongitude()) + "," + String.valueOf(mLastLocation.getLatitude());
+        else{
+            location = "16,96";
+        }
+
+        Toast.makeText(this, location, Toast.LENGTH_SHORT).show();
 
         AvaliableJobsAPI.getInstance().getService().driverRegister(nam, mail, pwd, phone.getText().toString(), address.getText().toString(), location, new Callback<String>() {
             @Override
@@ -127,26 +146,73 @@ public class RegisterPage extends ActionBarActivity implements View.OnClickListe
 
 
             }
-        });*/
+        });
 
 
+
+    }
+
+
+    protected synchronized void buildGoogleApiClient() {
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
+        createLocationRequest();
+    }
+
+    protected void startLocationUpdates() {
+        // The final argument to {@code requestLocationUpdates()} is a LocationListener
+        // (http://developer.android.com/reference/com/google/android/gms/location/LocationListener.html).
+        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+    }
+
+    @Override
+    public void onConnected(Bundle bundle) {
+        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        if (mLastLocation != null) {
+            //Toast.makeText(this, "Get Location", Toast.LENGTH_LONG).show();
+            Log.i("lat", String.valueOf(mLastLocation.getLatitude()));
+            Log.i("lon", String.valueOf(mLastLocation.getLongitude()));
+        } else {
+            //Toast.makeText(this, "Cannot get Location", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        mGoogleApiClient.connect();
 
     }
 
     @Override
-    public void onLocationChanged(Location location) {
-
-        if(location!=null) {
-            Toast.makeText(this, String.valueOf(location.getLongitude()),
-                    Toast.LENGTH_SHORT).show();
-
-            gpsconnector.stopLocationUpdates();
-        }else{
-
-        }
-
+    public void onConnectionFailed(ConnectionResult connectionResult) {
 
     }
+
+
+    protected void createLocationRequest() {
+        mLocationRequest = new LocationRequest();
+
+        // Sets the desired interval for active location updates. This interval is
+        // inexact. You may not receive updates at all if no location sources are available, or
+        // you may receive them slower than requested. You may also receive updates faster than
+        // requested if other applications are requesting location at a faster interval.
+        mLocationRequest.setInterval(UPDATE_INTERVAL_IN_MILLISECONDS);
+
+        // Sets the fastest rate for active location updates. This interval is exact, and your
+        // application will never receive updates faster than this value.
+        mLocationRequest.setFastestInterval(FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS);
+
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        mLastLocation = location;
+    }
+
 
     /*private void getToken(String email, String pwd){
         AvaliableJobsAPI.getInstance().getService().getToken(email, pwd, "uuid", new Callback<String>() {
