@@ -3,6 +3,14 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <!--<com.andexert.library.RippleView
+        android:id="@+id/rippleview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@+id/more2"
+        android:layout_margin="5dp"
+        >-->
+
     <android.support.v7.widget.CardView
         xmlns:card_view="http://schemas.android.com/apk/res-auto"
         xmlns:android="http://schemas.android.com/apk/res/android"
@@ -64,6 +72,8 @@
     </RelativeLayout>
 
     </android.support.v7.widget.CardView>
+
+    <!--</com.andexert.library.RippleView>-->
 
 
 </LinearLayout>

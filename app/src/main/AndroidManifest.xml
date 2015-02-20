@@ -12,11 +12,13 @@
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme"
+        >
         <activity
             android:name=".LoginActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.Toolbar" >
+            android:theme="@style/AppTheme.Toolbar"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -26,18 +28,23 @@
         <activity
             android:name=".TabMainActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.Toolbar" >
+            android:theme="@style/AppTheme.Toolbar"
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".JobDetailActivity"
             android:label="JobDetail"
-            android:theme="@style/AppTheme.Toolbar" >
+            android:theme="@style/AppTheme.Toolbar"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".RegisterPage"
-            android:label="@string/title_activity_register_page" >
+            android:label="@string/title_activity_register_page"
+            android:theme="@style/AppTheme"
+            android:screenOrientation="portrait" >
         </activity>
-        <activity android:name=".ProfileActivity" >
+        <activity android:name=".ProfileActivity"
+            android:screenOrientation="portrait">
         </activity>
 
         <meta-data
@@ -49,7 +56,8 @@
 
         <activity
             android:name=".UpdateProfileActivity"
-            android:label="@string/title_activity_update_profile" >
+            android:label="@string/title_activity_update_profile"
+            android:screenOrientation="portrait" >
         </activity>
     </application>
 

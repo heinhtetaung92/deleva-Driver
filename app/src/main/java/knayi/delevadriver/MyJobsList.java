@@ -134,7 +134,7 @@ public class MyJobsList extends Fragment implements View.OnClickListener {
                         scrollview.setVisibility(View.VISIBLE);
                         connectionerrorview.setVisibility(View.INVISIBLE);
                         progress.setVisibility(View.INVISIBLE);
-                        recyclerView.setAdapter(new SimpleHeaderRecyclerAdapter(getActivity(), items, headerView));
+                        recyclerView.setAdapter(new SimpleHeaderRecyclerAdapter(getActivity(), null, items, headerView));
                     }
 
 

@@ -2,6 +2,7 @@ package knayi.delevadriver;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -32,6 +33,12 @@ public class UpdateProfileActivity extends ActionBarActivity implements View.OnC
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_update_profile);
 
+        ActionBar actionbar = getSupportActionBar();
+
+        if(actionbar != null) {
+            actionbar.setHomeButtonEnabled(true);
+            actionbar.setDisplayHomeAsUpEnabled(true);
+        }
 
         update = (TextView) findViewById(R.id.update_button);
 
@@ -59,6 +66,17 @@ public class UpdateProfileActivity extends ActionBarActivity implements View.OnC
 
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if(item.getItemId() == android.R.id.home){
+            startActivity(new Intent(UpdateProfileActivity.this, ProfileActivity.class));
+            finish();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
 
     @Override
     public void onClick(View v) {

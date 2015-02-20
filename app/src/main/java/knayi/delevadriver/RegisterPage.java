@@ -12,7 +12,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -23,10 +22,6 @@ import com.pnikosis.materialishprogress.ProgressWheel;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import knayi.delevadriver.api.AvaliableJobsAPI;
-import knayi.delevadriver.gpslocation.GPSLocation;
-import knayi.delevadriver.gpslocation.GPSTracker;
-import knayi.delevadriver.gpslocation.LidaComLocalizacao;
-import knayi.delevadriver.gpslocation.MyLocation;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -42,8 +37,9 @@ public class RegisterPage extends ActionBarActivity implements View.OnClickListe
     ProgressWheel progress;
     GoogleApiClient mGoogleApiClient;
     LocationRequest mLocationRequest;
+    View progressbackground;
 
-    Location mLastLocation = null;
+    public Location mLastLocation = null;
 
     public static final long UPDATE_INTERVAL_IN_MILLISECONDS = 10000;
 
@@ -64,7 +60,9 @@ public class RegisterPage extends ActionBarActivity implements View.OnClickListe
         phone = (EditText) findViewById(R.id.register_phone);
         address = (EditText) findViewById(R.id.register_address);
 
+
         progress = (ProgressWheel) findViewById(R.id.register_progress_wheel);
+        progressbackground = findViewById(R.id.register_progresswheel_background);
 
         register.setOnClickListener(this);
 
@@ -74,8 +72,6 @@ public class RegisterPage extends ActionBarActivity implements View.OnClickListe
         if (mGoogleApiClient.isConnected()) {
             startLocationUpdates();
         }
-
-
 
     }
 
@@ -111,47 +107,83 @@ public class RegisterPage extends ActionBarActivity implements View.OnClickListe
     public void onClick(View v) {
 
 
-        Log.i("Location", String.valueOf(mLastLocation.getLongitude()) + ", " + String.valueOf(mLastLocation.getLatitude()));
 
-        String nam = name.getText().toString();
-        final String mail = email.getText().toString();
-        final String pwd = password.getText().toString();
-        progress.setVisibility(View.VISIBLE);
+        if(Connection.isOnline(this)) {
 
-        String location = null;
-        if(mLastLocation != null)
-            location = String.valueOf(mLastLocation.getLongitude()) + "," + String.valueOf(mLastLocation.getLatitude());
-        else{
-            location = "16,96";
-        }
 
-        Toast.makeText(this, location, Toast.LENGTH_SHORT).show();
+            Log.i("Location", String.valueOf(mLastLocation.getLongitude()) + ", " + String.valueOf(mLastLocation.getLatitude()));
 
-        AvaliableJobsAPI.getInstance().getService().driverRegister(nam, mail, pwd, phone.getText().toString(), address.getText().toString(), location, new Callback<String>() {
-            @Override
-            public void success(String s, Response response) {
-                startActivity(new Intent(getApplicationContext(), LoginActivity.class));
-                //getToken(mail, pwd);
-                progress.setVisibility(View.INVISIBLE);
-            }
+            String nam = name.getText().toString();
+            final String mail = email.getText().toString();
+            final String pwd = password.getText().toString();
+            progress.setVisibility(View.VISIBLE);
+            progressbackground.setVisibility(View.VISIBLE);
 
-            @Override
-            public void failure(RetrofitError error) {
-                progress.setVisibility(View.INVISIBLE);
-
-                new SweetAlertDialog(RegisterPage.this, SweetAlertDialog.ERROR_TYPE)
-                        .setTitleText("Oops...")
-                        .setContentText("Something went wrong!")
+            if(nam.equals("") || mail.equals("") || pwd.equals("") || phone.getText().toString().equals("") || address.getText().toString().equals("")){
+                new SweetAlertDialog(RegisterPage.this, SweetAlertDialog.WARNING_TYPE)
+                        .setTitleText("Please fill Name and Password")
                         .show();
 
+                progress.setVisibility(View.INVISIBLE);
+                progressbackground.setVisibility(View.INVISIBLE);
 
             }
-        });
+            else {
+
+                String location = null;
+                if (mLastLocation != null)
+                    location = String.valueOf(mLastLocation.getLongitude()) + "," + String.valueOf(mLastLocation.getLatitude());
+                else {
+                    location = "16,96";
+                }
+
+
+                AvaliableJobsAPI.getInstance().getService().driverRegister(nam, mail, pwd, phone.getText().toString(), address.getText().toString(), location, new Callback<String>() {
+                    @Override
+                    public void success(String s, Response response) {
+                        startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+                        //getToken(mail, pwd);
+                        progress.setVisibility(View.INVISIBLE);
+                        progressbackground.setVisibility(View.INVISIBLE);
+
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                        progress.setVisibility(View.INVISIBLE);
+
+                        progressbackground.setVisibility(View.INVISIBLE);
+
+                        // get error and show message accrodding to error
+
+
+                        new SweetAlertDialog(RegisterPage.this, SweetAlertDialog.ERROR_TYPE)
+                                .setTitleText("Oops...")
+                                .setContentText("Something went wrong!")
+                                .show();
+
+
+                    }
+                });
+            }
+
+        }
+        else{
+            new SweetAlertDialog(RegisterPage.this, SweetAlertDialog.WARNING_TYPE)
+                    .setTitleText("Oops...")
+                    .setContentText("Conneciton is loss!")
+                    .show();
+        }
 
 
 
     }
 
+    protected void startLocationUpdates() {
+        // The final argument to {@code requestLocationUpdates()} is a LocationListener
+        // (http://developer.android.com/reference/com/google/android/gms/location/LocationListener.html).
+        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+    }
 
     protected synchronized void buildGoogleApiClient() {
         mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -162,7 +194,7 @@ public class RegisterPage extends ActionBarActivity implements View.OnClickListe
         createLocationRequest();
     }
 
-    protected void startLocationUpdates() {
+    protected void createLocationRequestationUpdates() {
         // The final argument to {@code requestLocationUpdates()} is a LocationListener
         // (http://developer.android.com/reference/com/google/android/gms/location/LocationListener.html).
         LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
@@ -191,6 +223,11 @@ public class RegisterPage extends ActionBarActivity implements View.OnClickListe
 
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mGoogleApiClient.disconnect();
+    }
 
     protected void createLocationRequest() {
         mLocationRequest = new LocationRequest();

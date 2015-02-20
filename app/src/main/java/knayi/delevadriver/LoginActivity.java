@@ -37,6 +37,7 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
     TextView login, register;
     EditText username, password;
     ProgressWheel progress;
+    View progressbackground;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,9 +51,12 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
         username = (EditText) findViewById(R.id.login_username);
         password = (EditText) findViewById(R.id.login_password);
 
-        progress = (ProgressWheel) findViewById(R.id.progress_wheel);
-        progress.bringToFront();
+        progressbackground = findViewById(R.id.login_progresswheel_background);
 
+        progress = (ProgressWheel) findViewById(R.id.progress_wheel);
+
+        progressbackground.bringToFront();
+        progress.bringToFront();
         login.setOnClickListener(this);
         register.setOnClickListener(this);
 
@@ -71,10 +75,17 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
 
             case R.id.login_button:
 
+                if(username.getText().toString().equals("") || password.getText().toString().equals("")){
+                    new SweetAlertDialog(LoginActivity.this, SweetAlertDialog.WARNING_TYPE)
+                            .setTitleText("Please fill Name and Password")
+                            .show();
+                }
+
+                else
                 if(Connection.isOnline(this)){
 
-
                 progress.setVisibility(View.VISIBLE);
+                progressbackground.setVisibility(View.VISIBLE);
 
 
                 String uniquekey = Build.SERIAL + android.provider.Settings.Secure.getString(getApplicationContext().getContentResolver(),
@@ -116,13 +127,16 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
                             }else{
                                 new SweetAlertDialog(LoginActivity.this, SweetAlertDialog.ERROR_TYPE)
                                         .setTitleText("Oops...")
-                                        .setContentText("Something went wrong!")
+                                        .setContentText("Cannot access Account")
                                         .show();
                             }
 
                         }catch(JSONException exp){
                             exp.printStackTrace();
                         }
+
+                        progress.setVisibility(View.INVISIBLE);
+                        progressbackground.setVisibility(View.INVISIBLE);
 
                         startActivity(new Intent(getApplicationContext(), TabMainActivity.class));
 
@@ -131,10 +145,16 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
 
                     @Override
                     public void failure(RetrofitError error) {
+
+                        progress.setVisibility(View.INVISIBLE);
+                        progressbackground.setVisibility(View.INVISIBLE);
+
                         new SweetAlertDialog(LoginActivity.this, SweetAlertDialog.ERROR_TYPE)
                                 .setTitleText("Oops...")
-                                .setContentText("Something went wrong!")
+                                .setContentText("UserName or Password is Incorrect!")
                                 .show();
+
+
                     }
                 });
 
@@ -142,12 +162,12 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
                     exp1.printStackTrace();
                 }
 
-                progress.setVisibility(View.INVISIBLE);
+
 
 
                 }
                 else{
-                    new SweetAlertDialog(LoginActivity.this, SweetAlertDialog.ERROR_TYPE)
+                    new SweetAlertDialog(LoginActivity.this, SweetAlertDialog.WARNING_TYPE)
                             .setTitleText("Oops...")
                             .setContentText("Conneciton is loss!")
                             .show();

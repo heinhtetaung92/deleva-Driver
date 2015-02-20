@@ -13,12 +13,13 @@
     <Button
         android:id="@+id/submitbutton"
         android:layout_width="80dp"
-        android:layout_height="45dp"
+        android:layout_height="wrap_content"
         android:text="Submit"
         android:layout_below="@id/messagebox"
         android:layout_alignRight="@id/messagebox"
         android:layout_alignLeft="@id/messagebox"
         android:padding="15dp"
-        android:background="@color/primary"/>
+        android:layout_marginTop="10dp"
+        android:background="@drawable/loginselector"/>
 
 </RelativeLayout>

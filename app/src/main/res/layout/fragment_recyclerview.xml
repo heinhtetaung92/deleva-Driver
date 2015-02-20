@@ -45,7 +45,7 @@
             android:layout_height="45dp"
             android:text="Try Again"
             android:layout_below="@+id/tv1"
-            android:background="@color/primary"
+            android:background="@drawable/loginselector"
            android:layout_centerHorizontal="true"
             android:gravity="center"
             android:layout_margin="10dp"/>

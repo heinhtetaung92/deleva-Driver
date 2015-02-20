@@ -68,6 +68,8 @@ public class JobDetailActivity extends ActionBarActivity implements ObservableSc
 
     MapFragment map;
 
+    String location = "";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,6 +77,8 @@ public class JobDetailActivity extends ActionBarActivity implements ObservableSc
 
         Bundle bundle = getIntent().getExtras();
         jobItem = bundle.getParcelable("JobItem");
+        location = bundle.getString("location");
+
 
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
 
@@ -110,8 +114,9 @@ public class JobDetailActivity extends ActionBarActivity implements ObservableSc
             googleMap.addMarker(new MarkerOptions()
                     .position(new LatLng(jobItem.get_lon(), jobItem.get_lat()))
                     .title(jobItem.get_type()));
-            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(jobItem.get_lon(), jobItem.get_lat()), 13));
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(jobItem.get_lat(), jobItem.get_lon()), 15));
             Log.i("MAP", "change to zoom");
+            Log.i("MAP", jobItem.get_lat() + "," + jobItem.get_lon());
         }
 
 
@@ -200,7 +205,6 @@ public class JobDetailActivity extends ActionBarActivity implements ObservableSc
         Long tsLong = System.currentTimeMillis()/1000;
         final String ts = tsLong.toString();
         final String token = sPref.getString(Config.TOKEN, null);
-        final String location = null;//GPSLocation.getLocation(this);
 
         switch(v.getId()){
 
@@ -290,6 +294,7 @@ public class JobDetailActivity extends ActionBarActivity implements ObservableSc
                         @Override
                         public void success(String s, Response response) {
                             progress.setVisibility(View.INVISIBLE);
+                            Toast.makeText(getApplicationContext(), "Success!", Toast.LENGTH_SHORT).show();
                             startActivity(new Intent(JobDetailActivity.this, TabMainActivity.class));
                             finish();
                         }

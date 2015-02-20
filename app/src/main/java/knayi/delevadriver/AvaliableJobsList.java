@@ -19,6 +19,11 @@ import android.widget.Toast;
 
 import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 import com.pnikosis.materialishprogress.ProgressWheel;
 
 import org.json.JSONArray;
@@ -36,7 +41,7 @@ import knayi.delevadriver.model.Requester;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-public class AvaliableJobsList extends Fragment implements View.OnClickListener {
+public class AvaliableJobsList extends Fragment implements View.OnClickListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
     public static final String ARG_INITIAL_POSITION = "ARG_INITIAL_POSITION";
 
@@ -48,6 +53,17 @@ public class AvaliableJobsList extends Fragment implements View.OnClickListener 
     ProgressWheel progress;
     SharedPreferences sPref;
     TextView tv1;
+
+    GoogleApiClient mGoogleApiClient;
+    LocationRequest mLocationRequest;
+
+    public Location mLastLocation = null;
+
+    public static final long UPDATE_INTERVAL_IN_MILLISECONDS = 10000;
+
+
+    public static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS =
+            UPDATE_INTERVAL_IN_MILLISECONDS / 2;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -75,21 +91,18 @@ public class AvaliableJobsList extends Fragment implements View.OnClickListener 
         connectionerrorview.setVisibility(View.INVISIBLE);
         progress.setVisibility(View.VISIBLE);
 
+        this.buildGoogleApiClient();
 
+        mGoogleApiClient.connect();
+
+        /*if (mGoogleApiClient.isConnected()) {
+            startLocationUpdates();
+        }*/
 
 
         Log.i("Connection", String.valueOf(Connection.isOnline(getActivity())));
 
-        if(Connection.isOnline(getActivity())){
-            getDatafromServer();
 
-        }else{
-
-            tv1.setText("Cannot connect to Server");
-            scrollview.setVisibility(View.INVISIBLE);
-            connectionerrorview.setVisibility(View.VISIBLE);
-            progress.setVisibility(View.INVISIBLE);
-        }
 
 
 
@@ -125,16 +138,27 @@ public class AvaliableJobsList extends Fragment implements View.OnClickListener 
         Long tsLong = System.currentTimeMillis()/1000;
         String ts = tsLong.toString();
 
-        String location = null;//GPSLocation.getLocation(getActivity());
 
-        if(token != null && location != null){
-            AvaliableJobsAPI.getInstance().getService().getJobListByLocation(token, "96.275320,16.805588", ts, new retrofit.Callback<String>() {
+
+        ;
+
+        if(mLastLocation != null){
+
+            final String location = String.valueOf(mLastLocation.getLongitude()) + "," + String.valueOf(mLastLocation.getLatitude());
+
+            Log.i("avaliabletoken", token);
+            Log.i("avaliableTime", ts);
+            Log.i("avaliableLocation", location);
+
+            AvaliableJobsAPI.getInstance().getService().getJobListByLocation(token, location, ts, new retrofit.Callback<String>() {
+
                 @Override
                 public void success(String s, Response response) {
 
                     Log.i("APIGet", "Success");
                     ArrayList<JobItem> items = (ArrayList<JobItem>) JSONToJob(s);
                     Log.i("itemsize", String.valueOf(items.size()));
+
                     if(items.size() == 0){
                         tv1.setText("No avaliable job near you!");
                         scrollview.setVisibility(View.INVISIBLE);
@@ -144,9 +168,8 @@ public class AvaliableJobsList extends Fragment implements View.OnClickListener 
                         scrollview.setVisibility(View.VISIBLE);
                         connectionerrorview.setVisibility(View.INVISIBLE);
                         progress.setVisibility(View.INVISIBLE);
-                        recyclerView.setAdapter(new SimpleHeaderRecyclerAdapter(getActivity(), items, headerView));
+                        recyclerView.setAdapter(new SimpleHeaderRecyclerAdapter(getActivity(), location, items, headerView));
                     }
-
 
                 }
 
@@ -154,22 +177,59 @@ public class AvaliableJobsList extends Fragment implements View.OnClickListener 
                 public void failure(RetrofitError error) {
                     Log.i("APIGet", "Failuare");
 
+                    tv1.setText("Cannot connect to Server");
                     scrollview.setVisibility(View.INVISIBLE);
                     connectionerrorview.setVisibility(View.VISIBLE);
                     progress.setVisibility(View.INVISIBLE);
 
-
                 }
             });
+
         }
         else{
+
+            tv1.setText("Cannot get GPS! \nPlease make sure GPS is opening.");
             scrollview.setVisibility(View.INVISIBLE);
             connectionerrorview.setVisibility(View.VISIBLE);
             progress.setVisibility(View.INVISIBLE);
+
         }
 
 
 
+    }
+
+    protected void startLocationUpdates() {
+        // The final argument to {@code requestLocationUpdates()} is a LocationListener
+        // (http://developer.android.com/reference/com/google/android/gms/location/LocationListener.html).
+        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+    }
+
+
+
+    protected synchronized void buildGoogleApiClient() {
+        mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
+        createLocationRequest();
+    }
+
+    protected void createLocationRequest() {
+        mLocationRequest = new LocationRequest();
+
+        // Sets the desired interval for active location updates. This interval is
+        // inexact. You may not receive updates at all if no location sources are available, or
+        // you may receive them slower than requested. You may also receive updates faster than
+        // requested if other applications are requesting location at a faster interval.
+        mLocationRequest.setInterval(UPDATE_INTERVAL_IN_MILLISECONDS);
+
+        // Sets the fastest rate for active location updates. This interval is exact, and your
+        // application will never receive updates faster than this value.
+        mLocationRequest.setFastestInterval(FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS);
+
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
     }
 
 
@@ -255,6 +315,59 @@ public class AvaliableJobsList extends Fragment implements View.OnClickListener 
         connectionerrorview.setVisibility(View.INVISIBLE);
         progress.setVisibility(View.VISIBLE);
 
-        getDatafromServer();
+
+
+        if(!Connection.isOnline(getActivity())){
+
+            tv1.setText("Cannot connect to Server");
+            scrollview.setVisibility(View.INVISIBLE);
+            connectionerrorview.setVisibility(View.VISIBLE);
+            progress.setVisibility(View.INVISIBLE);
+        }else
+            getDatafromServer();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        mGoogleApiClient.disconnect();
+    }
+
+    @Override
+    public void onConnected(Bundle bundle) {
+        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+
+        startLocationUpdates();
+
+        if(!Connection.isOnline(getActivity())){
+
+            tv1.setText("Cannot connect to Server");
+            scrollview.setVisibility(View.INVISIBLE);
+            connectionerrorview.setVisibility(View.VISIBLE);
+            progress.setVisibility(View.INVISIBLE);
+        }else
+            getDatafromServer();
+
+        /*if(Connection.isOnline(getActivity()))
+            getDatafromServer();
+        else
+            Toast.makeText(getActivity(), "not connected", Toast.LENGTH_SHORT).show();
+*/
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        mGoogleApiClient.connect();
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        mLastLocation = location;
+        Log.i("AvaliableJobLocation", location.toString());
     }
 }

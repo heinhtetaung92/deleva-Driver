@@ -4,14 +4,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.pnikosis.materialishprogress.ProgressWheel
-        android:id="@+id/progress_wheel"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:layout_gravity="center"
-        app:barColor="@color/primary"
-        app:progressIndeterminate="true"
-        android:visibility="invisible"/>
+
 
     <RelativeLayout
         android:id="@+id/login_mainlayout"
@@ -35,7 +28,11 @@
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:layout_below="@id/login_imageview"
-            android:hint="Username"/>
+            android:singleLine="true"
+            android:textColor="@color/primary"
+            android:inputType="textEmailAddress"
+            android:textColorHint="@color/tranprimary"
+            android:hint="Email"/>
 
         <EditText
             android:id="@+id/login_password"
@@ -43,6 +40,9 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/login_username"
             android:inputType="textPassword"
+            android:singleLine="true"
+            android:textColor="@color/primary"
+            android:textColorHint="@color/tranprimary"
             android:hint="Password"/>
 
     =
@@ -52,9 +52,9 @@
             android:layout_width="200dp"
             android:layout_height="40dp"
             android:text="Login"
-            android:background="@color/primary"
+            android:background="@drawable/loginselector"
             android:gravity="center"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="15dp"
             android:layout_below="@+id/login_password"
             android:layout_alignRight="@+id/login_password"/>
 
@@ -62,14 +62,32 @@
             android:id="@+id/login_register"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/primaryDark"
+            android:textColor="@drawable/registertextselector"
             android:layout_below="@id/login_button"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="15dp"
+            android:padding="10dp"
             android:text="No account? Register Here."/>
 
 
     </RelativeLayout>
 
+
+    <View
+        android:id="@+id/login_progresswheel_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#99d3d3d3"
+        android:visibility="invisible"/>
+
+
+    <com.pnikosis.materialishprogress.ProgressWheel
+        android:id="@+id/progress_wheel"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_gravity="center"
+        app:barColor="@color/primary"
+        app:progressIndeterminate="true"
+        android:visibility="invisible"/>
 
 
     </FrameLayout>

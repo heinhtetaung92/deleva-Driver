@@ -58,7 +58,7 @@ public class ProfileActivity extends ActionBarActivity {
 
         sPref = getSharedPreferences(Config.TOKEN_PREF, MODE_PRIVATE);
 
-        profile_picture.setImageResource(R.drawable.profilesampleimage);
+        profile_picture.setImageResource(R.drawable.blank_profile);
         profile_picture.setAdjustViewBounds(true);
         profile_picture.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
@@ -141,8 +141,11 @@ public class ProfileActivity extends ActionBarActivity {
                             editor.putString(Config.TOKEN, null);
                             editor.commit();
 
-                            startActivity(new Intent(ProfileActivity.this, LoginActivity.class));
+                            Intent intent = new Intent(ProfileActivity.this, LoginActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivityForResult(intent, 0);
                             finish();
+
 
                         }
                     })
@@ -160,13 +163,13 @@ public class ProfileActivity extends ActionBarActivity {
             intent.putExtra("address", addressval);
 
             startActivity(intent);
-            finish();
         }
         else if(item.getItemId() == android.R.id.home){
+            startActivity(new Intent(this, TabMainActivity.class));
             finish();
         }
 
-        return super.onOptionsItemSelected(item);
+        return true;
     }
 
 

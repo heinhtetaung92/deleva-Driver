@@ -61,13 +61,15 @@
             <EditText
                 android:id="@+id/update_name"
                 android:layout_width="200dp"
-                android:layout_height="35dp" />
+                android:layout_height="35dp"
+                android:singleLine="true"/>
 
             <EditText
                 android:id="@+id/update_email"
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
-                android:inputType="textEmailAddress"/>
+                android:inputType="textEmailAddress"
+                android:singleLine="true"/>
 
 
             <EditText
@@ -75,24 +77,26 @@
                 android:id="@+id/update_phone"
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
-                android:inputType="phone"/>
+                android:inputType="phone"
+                android:singleLine="true"/>
 
 
             <EditText
 
                 android:id="@+id/update_address"
                 android:layout_width="200dp"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:singleLine="true" />
 
         </LinearLayout>
 
         <TextView
             android:id="@+id/update_button"
-            android:layout_width="80dp"
+            android:layout_width="150dp"
             android:layout_height="45dp"
             android:text="Update"
             android:gravity="center"
-            android:background="@color/primary"
+            android:background="@drawable/loginselector"
             android:layout_marginTop="10dp"
             android:layout_alignRight="@id/update_layout2"
             android:layout_below="@id/update_layout2"/>

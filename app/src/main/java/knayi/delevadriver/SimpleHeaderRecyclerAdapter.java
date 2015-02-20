@@ -40,13 +40,16 @@ public class SimpleHeaderRecyclerAdapter extends RecyclerView.Adapter<RecyclerVi
     private View mHeaderView;
     private static Context mContext;
     private Activity activity;
+    private String location;
 
-    public SimpleHeaderRecyclerAdapter(Context context, ArrayList<JobItem> items, View headerView) {
+    public SimpleHeaderRecyclerAdapter(Context context, String location, ArrayList<JobItem> items, View headerView) {
         mInflater = LayoutInflater.from(context);
         mItems = items;
         mHeaderView = headerView;
         mContext = context;
         activity = (Activity) context;
+        this.location = location;
+
     }
 
     @Override
@@ -72,7 +75,6 @@ public class SimpleHeaderRecyclerAdapter extends RecyclerView.Adapter<RecyclerVi
         } else {
 
             View v = mInflater.inflate(R.layout.custom_joblist, parent, false);
-
             v.setOnClickListener(this);
 
             return new ItemViewHolder(v);
@@ -108,12 +110,10 @@ public class SimpleHeaderRecyclerAdapter extends RecyclerView.Adapter<RecyclerVi
             Intent intent = new Intent(mContext, JobDetailActivity.class);
 
             intent.putExtra("JobItem", mItems.get((Integer)v.getTag()));
+            intent.putExtra("location", location);
 
 
             mContext.startActivity(intent);
-
-
-
 
 
         }
