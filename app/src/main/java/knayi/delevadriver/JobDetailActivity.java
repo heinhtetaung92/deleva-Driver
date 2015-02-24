@@ -152,11 +152,11 @@ public class JobDetailActivity extends ActionBarActivity implements ObservableSc
         else
             jobcreatetime.setText(": not include");
 
-        requestername.setText(": " + jobItem.get_requester().get_name());
-        requesterbusinesstype.setText(": " + jobItem.get_requester().get_business_type());
-        requesterphone.setText(": " + jobItem.get_requester().get_mobile_number());
-        requesteremail.setText(": " + jobItem.get_requester().get_email());
-        requesteraddress.setText(": " + jobItem.get_requester().get_address());
+        requestername.setText(": " + jobItem.get_requester_name());
+        requesterbusinesstype.setText(": " + jobItem.get_requester_business_type());
+        requesterphone.setText(": " + jobItem.get_requester_mobile_number());
+        requesteremail.setText(": " + jobItem.get_requester_email());
+        requesteraddress.setText(": " + jobItem.get_requester_address());
 
 
         if(jobItem.get_status().equals("P")) {

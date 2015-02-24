@@ -1,9 +1,13 @@
 package knayi.delevadriver;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
+import android.location.LocationManager;
+import android.provider.Settings;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -44,6 +48,10 @@ public class TabMainActivity extends ActionBarActivity  implements ObservableScr
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tab_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+        if(!isGPSEnabled()){
+            showSettingsAlert();
+        }
 
 
         setSupportActionBar(toolbar);
@@ -357,5 +365,44 @@ public class TabMainActivity extends ActionBarActivity  implements ObservableScr
             return TITLES[position];
         }
     }
+
+    public boolean isGPSEnabled(){
+
+        LocationManager locationManager = (LocationManager) this
+                .getSystemService(LOCATION_SERVICE);
+
+        return locationManager
+                .isProviderEnabled(LocationManager.GPS_PROVIDER);
+
+    }
+
+    public void showSettingsAlert(){
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+
+        // Setting Dialog Title
+        alertDialog.setTitle("GPS is settings");
+
+        // Setting Dialog Message
+        alertDialog.setMessage("GPS is not enabled. Do you want to go to settings menu?");
+
+        // On pressing Settings button
+        alertDialog.setPositiveButton("Settings", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog,int which) {
+                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                startActivity(intent);
+            }
+        });
+
+        // on pressing cancel button
+        alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        // Showing Alert Message
+        alertDialog.show();
+    }
+
 
 }

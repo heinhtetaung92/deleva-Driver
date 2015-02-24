@@ -217,7 +217,6 @@ public class MyJobsList extends Fragment implements View.OnClickListener {
 
 
                         }
-                        jobitem.set_requester(requester);
 
 
 

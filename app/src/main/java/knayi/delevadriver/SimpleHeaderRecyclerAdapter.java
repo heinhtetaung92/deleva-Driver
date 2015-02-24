@@ -21,6 +21,7 @@ import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +29,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import knayi.delevadriver.model.JobItem;
 
@@ -36,19 +38,20 @@ public class SimpleHeaderRecyclerAdapter extends RecyclerView.Adapter<RecyclerVi
     private static final int VIEW_TYPE_ITEM = 1;
 
     private LayoutInflater mInflater;
-    private ArrayList<JobItem> mItems;
+    private List<JobItem> mItems;
     private View mHeaderView;
     private static Context mContext;
     private Activity activity;
     private String location;
 
-    public SimpleHeaderRecyclerAdapter(Context context, String location, ArrayList<JobItem> items, View headerView) {
+    public SimpleHeaderRecyclerAdapter(Context context, String location, List<JobItem> items, View headerView) {
         mInflater = LayoutInflater.from(context);
         mItems = items;
         mHeaderView = headerView;
         mContext = context;
         activity = (Activity) context;
         this.location = location;
+
 
     }
 
@@ -75,6 +78,7 @@ public class SimpleHeaderRecyclerAdapter extends RecyclerView.Adapter<RecyclerVi
         } else {
 
             View v = mInflater.inflate(R.layout.custom_joblist, parent, false);
+
             v.setOnClickListener(this);
 
             return new ItemViewHolder(v);
@@ -105,6 +109,8 @@ public class SimpleHeaderRecyclerAdapter extends RecyclerView.Adapter<RecyclerVi
 
     @Override
     public void onClick(View v) {
+        Log.i("ItemClickLocation", String.valueOf(v.getTag()));
+
         if(v.getTag() != null){
 
             Intent intent = new Intent(mContext, JobDetailActivity.class);
@@ -117,7 +123,9 @@ public class SimpleHeaderRecyclerAdapter extends RecyclerView.Adapter<RecyclerVi
 
 
         }
+
     }
+
 
     static class HeaderViewHolder extends RecyclerView.ViewHolder {
         public HeaderViewHolder(View view) {

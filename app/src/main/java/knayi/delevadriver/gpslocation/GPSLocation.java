@@ -247,4 +247,11 @@ public class GPSLocation implements ConnectionCallbacks,
 		//displayLocation();
 	}
 
+
+    public void isLocationEnabled(){
+
+
+
+    }
+
 }

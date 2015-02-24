@@ -2,6 +2,7 @@ package knayi.delevadriver;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Location;
 import android.location.LocationManager;
@@ -106,6 +107,9 @@ public class AvaliableJobsList extends Fragment implements View.OnClickListener,
 
 
 
+
+
+
         if (parentActivity instanceof ObservableScrollViewCallbacks) {
             // Scroll to the specified offset after layout
             Bundle args = getArguments();
@@ -156,7 +160,7 @@ public class AvaliableJobsList extends Fragment implements View.OnClickListener,
                 public void success(String s, Response response) {
 
                     Log.i("APIGet", "Success");
-                    ArrayList<JobItem> items = (ArrayList<JobItem>) JSONToJob(s);
+                    List<JobItem> items = JSONToJob(s);
                     Log.i("itemsize", String.valueOf(items.size()));
 
                     if(items.size() == 0){
@@ -169,6 +173,9 @@ public class AvaliableJobsList extends Fragment implements View.OnClickListener,
                         connectionerrorview.setVisibility(View.INVISIBLE);
                         progress.setVisibility(View.INVISIBLE);
                         recyclerView.setAdapter(new SimpleHeaderRecyclerAdapter(getActivity(), location, items, headerView));
+
+
+
                     }
 
                 }
@@ -233,16 +240,13 @@ public class AvaliableJobsList extends Fragment implements View.OnClickListener,
     }
 
 
-    private List JSONToJob(String s)
+    private List<JobItem> JSONToJob(String s)
     {
 
         Log.i("APIData", s);
-        ArrayList arraylist;
+        List<JobItem> arraylist = new ArrayList();
         JobItem jobitem;
-        Requester requester;
-        arraylist = new ArrayList();
 
-        requester = new Requester();
 
 
         try {
@@ -274,25 +278,24 @@ public class AvaliableJobsList extends Fragment implements View.OnClickListener,
                     if (jsonobject2 != null) {
 
                         Log.i("APIData requester jsonobject", jsonobject2.toString());
-                        requester.set_id(jsonobject2.getString("_id"));
-                        requester.set_type(jsonobject2.getString("type"));
-                        requester.set_name(jsonobject2.getString("name"));
-                        requester.set_email(jsonobject2.getString("email"));
-                        requester.set_business_type(jsonobject2.getString("business_type"));
-                        requester.set_mobile_number(jsonobject2.getString("mobile_number"));
-                        requester.set_address(jsonobject2.getString("address"));
-                        requester.set_confirmed(jsonobject2.getString("confirmed"));
-                        requester.set_latAndlan(jsonobject2.getJSONArray("business_address_ll").getLong(0), jsonobject2.getJSONArray("business_address_ll").getLong(1));
-
+                        jobitem.set_requester_id(jsonobject2.getString("_id"));
+                        jobitem.set_requester_type(jsonobject2.getString("type"));
+                        jobitem.set_requester_name(jsonobject2.getString("name"));
+                        jobitem.set_requester_email(jsonobject2.getString("email"));
+                        jobitem.set_requester_business_type(jsonobject2.getString("business_type"));
+                        jobitem.set_requester_mobile_number(jsonobject2.getString("mobile_number"));
+                        jobitem.set_requester_address(jsonobject2.getString("address"));
+                        jobitem.set_requester_confirmed(jsonobject2.getString("confirmed"));
+                        jobitem.set_requester_latAndlan(jsonobject2.getJSONArray("business_address_ll").getLong(0), jsonobject2.getJSONArray("business_address_ll").getLong(1));
 
 
                     }
-                    jobitem.set_requester(requester);
-
 
                     arraylist.add(jobitem);
 
+
                     i++;
+
                 }
 
             }
@@ -302,9 +305,12 @@ public class AvaliableJobsList extends Fragment implements View.OnClickListener,
         } catch (JSONException jsonexception) {
         jsonexception.printStackTrace();
             Log.i("APIData", "error");
-    }
+        }
 
         Log.i("APIData data size", String.valueOf(arraylist.size()));
+
+
+
         return arraylist;
     }
 
@@ -323,8 +329,18 @@ public class AvaliableJobsList extends Fragment implements View.OnClickListener,
             scrollview.setVisibility(View.INVISIBLE);
             connectionerrorview.setVisibility(View.VISIBLE);
             progress.setVisibility(View.INVISIBLE);
-        }else
-            getDatafromServer();
+        }else{
+
+            if(!mGoogleApiClient.isConnected()){
+                this.buildGoogleApiClient();
+
+                mGoogleApiClient.connect();
+            }else{
+                getDatafromServer();
+            }
+
+        }
+
     }
 
     @Override

@@ -1,9 +1,12 @@
 package knayi.delevadriver;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Location;
 import android.location.LocationManager;
+import android.provider.Settings;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,6 +22,9 @@ import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.pnikosis.materialishprogress.ProgressWheel;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import knayi.delevadriver.api.AvaliableJobsAPI;
@@ -38,6 +44,8 @@ public class RegisterPage extends ActionBarActivity implements View.OnClickListe
     GoogleApiClient mGoogleApiClient;
     LocationRequest mLocationRequest;
     View progressbackground;
+    LocationManager locationManager;
+    boolean isGPSEnable;
 
     public Location mLastLocation = null;
 
@@ -121,7 +129,7 @@ public class RegisterPage extends ActionBarActivity implements View.OnClickListe
 
             if(nam.equals("") || mail.equals("") || pwd.equals("") || phone.getText().toString().equals("") || address.getText().toString().equals("")){
                 new SweetAlertDialog(RegisterPage.this, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Please fill Name and Password")
+                        .setTitleText("Please fill all fields.")
                         .show();
 
                 progress.setVisibility(View.INVISIBLE);
@@ -134,7 +142,7 @@ public class RegisterPage extends ActionBarActivity implements View.OnClickListe
                 if (mLastLocation != null)
                     location = String.valueOf(mLastLocation.getLongitude()) + "," + String.valueOf(mLastLocation.getLatitude());
                 else {
-                    location = "16,96";
+                    location = "96, 16";
                 }
 
 
@@ -156,11 +164,55 @@ public class RegisterPage extends ActionBarActivity implements View.OnClickListe
 
                         // get error and show message accrodding to error
 
+                        if(error == null){
+                            new SweetAlertDialog(RegisterPage.this, SweetAlertDialog.ERROR_TYPE)
+                                    .setTitleText("Oops...")
+                                    .setContentText("Something went wrong!")
+                                    .show();
+                        }
+                        else{
 
-                        new SweetAlertDialog(RegisterPage.this, SweetAlertDialog.ERROR_TYPE)
-                                .setTitleText("Oops...")
-                                .setContentText("Something went wrong!")
-                                .show();
+                            String errmsg = error.getBody().toString();
+                            String errcode = "";
+
+
+
+                            try {
+                                JSONObject errobj = new JSONObject(errmsg);
+
+                                errcode = errobj.getJSONObject("err").getString("name");
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
+                            if(errcode.equals("MongoError")){
+
+                                new SweetAlertDialog(RegisterPage.this, SweetAlertDialog.ERROR_TYPE)
+                                        .setTitleText("Email is already used!")
+                                        .setContentText("")
+                                        .show();
+
+                            }
+                            else if(errcode.equals("ValidationError")){
+
+                                new SweetAlertDialog(RegisterPage.this, SweetAlertDialog.ERROR_TYPE)
+                                        .setTitleText("Email is invalid")
+                                        .setContentText("")
+                                        .show();
+
+                            }
+                            else{
+                                new SweetAlertDialog(RegisterPage.this, SweetAlertDialog.ERROR_TYPE)
+                                        .setTitleText("Oops...")
+                                        .setContentText("Something went wrong!")
+                                        .show();
+                            }
+
+                        }
+
+
+
 
 
                     }
@@ -168,7 +220,10 @@ public class RegisterPage extends ActionBarActivity implements View.OnClickListe
             }
 
         }
-        else{
+
+        else if(!isGPSEnabled()){
+            showSettingsAlert();
+        }else{
             new SweetAlertDialog(RegisterPage.this, SweetAlertDialog.WARNING_TYPE)
                     .setTitleText("Oops...")
                     .setContentText("Conneciton is loss!")
@@ -266,5 +321,43 @@ public class RegisterPage extends ActionBarActivity implements View.OnClickListe
             }
         });
     }*/
+
+    public boolean isGPSEnabled(){
+
+        locationManager = (LocationManager) this
+                .getSystemService(LOCATION_SERVICE);
+
+        return locationManager
+                .isProviderEnabled(LocationManager.GPS_PROVIDER);
+
+    }
+
+    public void showSettingsAlert(){
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+
+        // Setting Dialog Title
+        alertDialog.setTitle("GPS is settings");
+
+        // Setting Dialog Message
+        alertDialog.setMessage("GPS is not enabled. Do you want to go to settings menu?");
+
+        // On pressing Settings button
+        alertDialog.setPositiveButton("Settings", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog,int which) {
+                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                startActivity(intent);
+            }
+        });
+
+        // on pressing cancel button
+        alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        // Showing Alert Message
+        alertDialog.show();
+    }
 
 }
