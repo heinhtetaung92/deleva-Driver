@@ -300,15 +300,16 @@
 
 
 
-            <fragment
-                android:name="com.google.android.gms.maps.MapFragment"
-                android:id="@+id/map"
-                android:layout_width="match_parent"
-                android:layout_height="250dp"
-                android:layout_centerHorizontal="true"
-                android:layout_margin="15dp"
-                android:layout_below="@id/jobdetail_requesteraddress_value"
-                android:background="@android:color/white"/>
+                <TextView
+                    android:id="@+id/jobdetail_showmap"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/jobdetail_requesteraddress_value"
+                    android:padding="15dp"
+                    android:background="@color/primary"
+                    android:textColor="@android:color/white"
+                    android:text="View Location on Map"
+                    android:layout_marginBottom="70dp"/>
 
 
 

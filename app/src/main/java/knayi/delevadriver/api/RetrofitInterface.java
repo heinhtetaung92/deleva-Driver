@@ -65,6 +65,13 @@ public interface RetrofitInterface
                               @Field("address") String address,
                               Callback<String> callback);
 
+
+    @POST(APIConfig.LOCATION_REPORT)
+    public void updateLocation(@Query("access_token") String token,
+                               @Field("location") String location,
+                               @Field("timestamp") String timestamp,
+                                Callback<String> callback);
+
 }
 
 

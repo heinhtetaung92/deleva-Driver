@@ -96,6 +96,7 @@ public class AvaliableJobsList extends Fragment implements View.OnClickListener,
 
         mGoogleApiClient.connect();
 
+
         /*if (mGoogleApiClient.isConnected()) {
             startLocationUpdates();
         }*/
@@ -336,6 +337,9 @@ public class AvaliableJobsList extends Fragment implements View.OnClickListener,
 
                 mGoogleApiClient.connect();
             }else{
+
+                mGoogleApiClient.disconnect();
+                mGoogleApiClient.connect();
                 getDatafromServer();
             }
 

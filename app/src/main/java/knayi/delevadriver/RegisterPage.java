@@ -164,7 +164,7 @@ public class RegisterPage extends ActionBarActivity implements View.OnClickListe
 
                         // get error and show message accrodding to error
 
-                        if(error == null){
+                        if(error.getBody() == null){
                             new SweetAlertDialog(RegisterPage.this, SweetAlertDialog.ERROR_TYPE)
                                     .setTitleText("Oops...")
                                     .setContentText("Something went wrong!")

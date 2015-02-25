@@ -21,6 +21,7 @@ public class APIConfig
     public static final String DRIVER_REGISTER = "/register";
     public static final String GET_TOKEN = "/getToken";
     public static final String PROFILE_URL = "/me";
+    public static final String LOCATION_REPORT = "/location_report";
 
 
     public static final String TEST_URL = "/seed_data";

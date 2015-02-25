@@ -80,6 +80,7 @@ public class JobItem implements Parcelable{
         dest.writeLong(_requester_lan);
         dest.writeLong(_requester_lat);
         dest.writeString(_requester_mobile_number);
+        dest.writeString(_requester_business_type);
         dest.writeList(_requester_pictures);
         dest.writeString(_requester_name);
         dest.writeString(_requester_salt);
@@ -109,6 +110,7 @@ public class JobItem implements Parcelable{
         this._requester_lan = in.readLong();
         this._requester_lat = in.readLong();
         this._requester_mobile_number = in.readString();
+        this._requester_business_type = in.readString();
         in.readList(this._requester_pictures, List.class.getClassLoader());
         this._requester_name = in.readString();
         this._requester_salt = in.readString();

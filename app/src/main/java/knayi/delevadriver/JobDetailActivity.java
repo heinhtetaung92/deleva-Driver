@@ -46,6 +46,7 @@ import com.pnikosis.materialishprogress.ProgressWheel;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import knayi.delevadriver.api.AvaliableJobsAPI;
+import knayi.delevadriver.googlemap.GoogleMapActivity;
 import knayi.delevadriver.model.JobItem;
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -66,7 +67,6 @@ public class JobDetailActivity extends ActionBarActivity implements ObservableSc
 
     ProgressWheel progress;
 
-    MapFragment map;
 
     String location = "";
 
@@ -106,7 +106,7 @@ public class JobDetailActivity extends ActionBarActivity implements ObservableSc
         requesteremail = (TextView) findViewById(R.id.jobdetail_requesteremail_value);
         requesteraddress = (TextView) findViewById(R.id.jobdetail_requesteraddress_value);
 
-        map = (MapFragment) getFragmentManager().findFragmentById(R.id.map);
+        /*map = (MapFragment) getFragmentManager().findFragmentById(R.id.mini_map);
         map.getMapAsync(this);
         GoogleMap googleMap = map.getMap();
 
@@ -117,7 +117,15 @@ public class JobDetailActivity extends ActionBarActivity implements ObservableSc
             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(jobItem.get_lat(), jobItem.get_lon()), 15));
             Log.i("MAP", "change to zoom");
             Log.i("MAP", jobItem.get_lat() + "," + jobItem.get_lon());
-        }
+        }*/
+
+        findViewById(R.id.jobdetail_showmap).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(JobDetailActivity.this, GoogleMapActivity.class));
+            }
+        });
+
 
 
         progress = (ProgressWheel) findViewById(R.id.progress_wheel);
@@ -157,6 +165,7 @@ public class JobDetailActivity extends ActionBarActivity implements ObservableSc
         requesterphone.setText(": " + jobItem.get_requester_mobile_number());
         requesteremail.setText(": " + jobItem.get_requester_email());
         requesteraddress.setText(": " + jobItem.get_requester_address());
+
 
 
         if(jobItem.get_status().equals("P")) {
@@ -240,9 +249,9 @@ public class JobDetailActivity extends ActionBarActivity implements ObservableSc
                                         .setTitleText("")
                                         .setContentText("Please Login again!")
                                         .show();
-
-                                startActivity(new Intent(JobDetailActivity.this, LoginActivity.class));
                                 finish();
+                                startActivity(new Intent(JobDetailActivity.this, LoginActivity.class));
+
 
 
                             }
@@ -285,9 +294,9 @@ public class JobDetailActivity extends ActionBarActivity implements ObservableSc
                             .setTitleText("")
                             .setContentText("Please Login again!")
                             .show();
-
-                    startActivity(new Intent(JobDetailActivity.this, LoginActivity.class));
                     finish();
+                    startActivity(new Intent(JobDetailActivity.this, LoginActivity.class));
+
                 }
                 else{
                     AvaliableJobsAPI.getInstance().getService().acceptJob(jobItem.get_id(), token, location, ts, new Callback<String>() {

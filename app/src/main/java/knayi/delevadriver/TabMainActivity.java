@@ -30,6 +30,9 @@ import android.widget.Toast;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
 import com.github.ksoichiro.android.observablescrollview.ScrollState;
 import com.github.ksoichiro.android.observablescrollview.Scrollable;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.nineoldandroids.view.ViewHelper;
 import com.nineoldandroids.view.ViewPropertyAnimator;
 
@@ -43,6 +46,9 @@ public class TabMainActivity extends ActionBarActivity  implements ObservableScr
     private NavigationAdapter mPagerAdapter;
     SharedPreferences sPref;
 
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,6 +58,8 @@ public class TabMainActivity extends ActionBarActivity  implements ObservableScr
         if(!isGPSEnabled()){
             showSettingsAlert();
         }
+
+
 
 
         setSupportActionBar(toolbar);
@@ -91,6 +99,8 @@ public class TabMainActivity extends ActionBarActivity  implements ObservableScr
         });
 
         propagateToolbarState(toolbarIsShown());
+
+
 
 
     }
@@ -170,6 +180,9 @@ public class TabMainActivity extends ActionBarActivity  implements ObservableScr
             propagateToolbarState(isShown, view, toolbarHeight);
         }
     }
+
+
+
 
 
     private void propagateToolbarState(boolean isShown, View view, int toolbarHeight) {
