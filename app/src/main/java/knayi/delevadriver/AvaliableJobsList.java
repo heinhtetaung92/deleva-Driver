@@ -1,25 +1,28 @@
 package knayi.delevadriver;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
-import android.location.LocationManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
+import android.view.Window;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
-import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
@@ -31,16 +34,19 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.security.auth.callback.Callback;
 
 import knayi.delevadriver.api.AvaliableJobsAPI;
 import knayi.delevadriver.model.JobItem;
-import knayi.delevadriver.model.Requester;
+import knayi.delevadriver.model.MyTypeFace;
+import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import retrofit.mime.TypedByteArray;
+import retrofit.mime.TypedInput;
 
 public class AvaliableJobsList extends Fragment implements View.OnClickListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
@@ -49,7 +55,8 @@ public class AvaliableJobsList extends Fragment implements View.OnClickListener,
     View scrollview, connectionerrorview;
 
     TextView retrycon;
-    ObservableRecyclerView recyclerView;
+    RecyclerView recyclerView;
+    SwipeRefreshLayout swipeRefreshLayout;
     View headerView;
     ProgressWheel progress;
     SharedPreferences sPref;
@@ -58,28 +65,36 @@ public class AvaliableJobsList extends Fragment implements View.OnClickListener,
     GoogleApiClient mGoogleApiClient;
     LocationRequest mLocationRequest;
 
-    public Location mLastLocation = null;
+    public Location mLastLocation = null, CompareLocation;
 
-    public static final long UPDATE_INTERVAL_IN_MILLISECONDS = 10000;
+    public static final long UPDATE_INTERVAL_IN_MILLISECONDS = 50000;
 
 
     public static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS =
             UPDATE_INTERVAL_IN_MILLISECONDS / 2;
+
+    public static final int REFRESH = 111112;
+    public static final int NOT_REFRESH = 111113;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_recyclerview, container, false);
 
         final Activity parentActivity = getActivity();
-        recyclerView = (ObservableRecyclerView) view.findViewById(R.id.scroll);
+        recyclerView = (RecyclerView) view.findViewById(R.id.scroll);
         recyclerView.setLayoutManager(new LinearLayoutManager(parentActivity));
-        recyclerView.setHasFixedSize(false);
+        /*recyclerView.setHasFixedSize(false);*/
+
+        swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipeRefreshLayout);
+        swipeRefreshLayout.setProgressViewOffset(true, 0, 90);
 
         scrollview = view.findViewById(R.id.scroll);
         connectionerrorview = view.findViewById(R.id.connectionerrorlayout);
         retrycon = (TextView) view.findViewById(R.id.retryconnection);
         progress = (ProgressWheel) view.findViewById(R.id.progress_wheel);
         tv1 = (TextView) view.findViewById(R.id.tv1);
+        tv1.setTypeface(MyTypeFace.get(getActivity(), MyTypeFace.NORMAL));
+        retrycon.setTypeface(MyTypeFace.get(getActivity(), MyTypeFace.NORMAL));
 
         retrycon.setOnClickListener(this);
 
@@ -101,17 +116,22 @@ public class AvaliableJobsList extends Fragment implements View.OnClickListener,
             startLocationUpdates();
         }*/
 
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+
+                getDatafromServer(REFRESH);
+
+            }
+
+        });
+
 
         Log.i("Connection", String.valueOf(Connection.isOnline(getActivity())));
 
 
 
-
-
-
-
-
-        if (parentActivity instanceof ObservableScrollViewCallbacks) {
+        /*if (parentActivity instanceof ObservableScrollViewCallbacks) {
             // Scroll to the specified offset after layout
             Bundle args = getArguments();
             if (args != null && args.containsKey(ARG_INITIAL_POSITION)) {
@@ -130,17 +150,17 @@ public class AvaliableJobsList extends Fragment implements View.OnClickListener,
                 });
             }
             recyclerView.setScrollViewCallbacks((ObservableScrollViewCallbacks) parentActivity);
-        }
+        }*/
         return view;
     }
 
 
     //get data from server with retrofit
-    private void getDatafromServer(){
+    private void getDatafromServer(final int status){
 
         String token = sPref.getString(Config.TOKEN, null);
 
-        Long tsLong = System.currentTimeMillis()/1000;
+        Long tsLong = System.currentTimeMillis();
         String ts = tsLong.toString();
 
 
@@ -173,10 +193,20 @@ public class AvaliableJobsList extends Fragment implements View.OnClickListener,
                         scrollview.setVisibility(View.VISIBLE);
                         connectionerrorview.setVisibility(View.INVISIBLE);
                         progress.setVisibility(View.INVISIBLE);
-                        recyclerView.setAdapter(new SimpleHeaderRecyclerAdapter(getActivity(), location, items, headerView));
+
+
+                        if(getActivity() != null) {
+                            recyclerView.setAdapter(new AvaliableJobRecyclerAdapter(getActivity(), location, items, headerView));
+                        }
 
 
 
+                    }
+
+                    if (status == REFRESH){
+                        if(swipeRefreshLayout != null) {
+                            swipeRefreshLayout.setRefreshing(false);
+                        }
                     }
 
                 }
@@ -190,13 +220,194 @@ public class AvaliableJobsList extends Fragment implements View.OnClickListener,
                     connectionerrorview.setVisibility(View.VISIBLE);
                     progress.setVisibility(View.INVISIBLE);
 
+
+                    if(error.getBody() == null){
+
+                        MaterialDialog dialog = new MaterialDialog.Builder(getActivity())
+                                .title("")
+                                .titleColor(R.color.white)
+                                .customView(R.layout.custom_message_dialog, false)
+                                .backgroundColorRes(R.color.primary)
+                                .positiveText("OK")
+                                .positiveColor(R.color.white)
+                                .positiveColorRes(R.color.white)
+                                .build();
+
+
+                        dialog.show();
+
+                        TextView txt_title = (TextView) dialog.findViewById(R.id.dialog_title);
+                        TextView txt_message = (TextView) dialog.findViewById(R.id.dialog_message);
+                        txt_title.setTypeface(MyTypeFace.get(getActivity(), MyTypeFace.NORMAL));
+                        txt_message.setTypeface(MyTypeFace.get(getActivity(), MyTypeFace.NORMAL));
+
+                        txt_message.setText("Sorry, but an unknown error occurred while trying to connect to server.");
+
+                        /*final Dialog dialog = new Dialog(getActivity());
+                        dialog.setTitle("");
+                        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                        dialog.setContentView(R.layout.custom_dialog_textview);
+                        dialog.setCancelable(true);
+                        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+
+                        TextView dTitle = (TextView) dialog.findViewById(R.id.dialog_title);
+                        TextView dContentText = (TextView) dialog.findViewById(R.id.dialog_contenttext);
+                        dTitle.setTypeface(MyTypeFace.get(getActivity(), MyTypeFace.NORMAL));
+                        dContentText.setTypeface(MyTypeFace.get(getActivity(), MyTypeFace.NORMAL));
+
+
+                        dTitle.setText("");
+                        dContentText.setText("Sorry, but an unknown error occurred while trying to connect to server.");
+
+
+                        Button dialogButton = (Button) dialog.findViewById(R.id.dialog_positive);
+                        dialogButton.setTypeface(MyTypeFace.get(getActivity(), MyTypeFace.NORMAL));
+                        // if button is clicked, close the custom dialog
+                        dialogButton.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                dialog.dismiss();
+                            }
+                        });
+
+                        dialog.show();*/
+
+
+                    }
+                    else{
+
+                        String errmsg = error.getBody().toString();
+                        String errcode = "";
+
+
+
+                        try {
+                            JSONObject errobj = new JSONObject(errmsg);
+
+                            errcode = errobj.getJSONObject("err").getString("message");
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                        if(errcode.equals("Your are not authorized!")){
+
+                            /*final Dialog dialog = new Dialog(getActivity());
+                            dialog.setTitle("");
+                            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                            dialog.setContentView(R.layout.custom_dialog_textview);
+                            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+
+                            TextView dTitle = (TextView) dialog.findViewById(R.id.dialog_title);
+                            TextView dContentText = (TextView) dialog.findViewById(R.id.dialog_contenttext);
+                            dTitle.setTypeface(MyTypeFace.get(getActivity(), MyTypeFace.NORMAL));
+                            dContentText.setTypeface(MyTypeFace.get(getActivity(), MyTypeFace.NORMAL));
+
+
+                            dTitle.setText("You are not Authorized!");
+                            dContentText.setText("Please Login Again!");
+
+
+                            Button dialogButton = (Button) dialog.findViewById(R.id.dialog_positive);
+                            dialogButton.setTypeface(MyTypeFace.get(getActivity(), MyTypeFace.NORMAL));
+                            // if button is clicked, close the custom dialog
+                            dialogButton.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    dialog.dismiss();
+                                }
+                            });
+
+                            dialog.show();*/
+
+
+
+
+
+                            MaterialDialog dialog = new MaterialDialog.Builder(getActivity())
+                                    .customView(R.layout.custom_message_dialog, false)
+                                    .backgroundColorRes(R.color.primary)
+                                    .positiveText("OK")
+                                    .positiveColor(R.color.white)
+                                    .positiveColorRes(R.color.white)
+                                    .callback(new MaterialDialog.ButtonCallback() {
+                                        @Override
+                                        public void onPositive(MaterialDialog dialog) {
+                                            SharedPreferences.Editor editor = sPref.edit();
+                                            editor.putString(Config.TOKEN, null);
+                                            editor.commit();
+
+                                            Intent intent = new Intent(getActivity(), LoginActivity.class);
+                                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                            startActivityForResult(intent, 0);
+                                            getActivity().finish();
+                                        }
+                                    })
+                                    .cancelable(false)
+                                    .build();
+
+
+                            dialog.show();
+
+                            TextView txt_title = (TextView) dialog.findViewById(R.id.dialog_title);
+                            TextView txt_message = (TextView) dialog.findViewById(R.id.dialog_message);
+                            txt_title.setTypeface(MyTypeFace.get(getActivity(), MyTypeFace.NORMAL));
+                            txt_message.setTypeface(MyTypeFace.get(getActivity(), MyTypeFace.NORMAL));
+
+                            txt_message.setText("Please Login Again!");
+                            txt_title.setText("You are not Authorized!");
+
+
+
+
+
+                        }
+                        else{
+
+                            if (error.getBody() == null) {
+                                Toast.makeText(getActivity(), "Cannot connect to server!", Toast.LENGTH_SHORT).show();
+                            } else {
+
+                                String errmsg1 = error.getBody().toString();
+                                String errcode1 = "";
+
+
+                                try {
+                                    JSONObject errobj = new JSONObject(errmsg1);
+
+                                    errcode1 = errobj.getJSONObject("err").getString("message");
+
+                                    Toast.makeText(getActivity(), errcode1, Toast.LENGTH_SHORT).show();
+
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+
+
+
+                            }
+                        }
+
+                    }
+
+                    if(status == REFRESH){
+                        if(swipeRefreshLayout != null) {
+                            swipeRefreshLayout.setRefreshing(false);
+                        }
+                    }
+
                 }
+
+
+
             });
 
         }
         else{
 
-            tv1.setText("Cannot get GPS! \nPlease make sure GPS is opening.");
+            tv1.setText("Please make sure GPS is enabled.");
             scrollview.setVisibility(View.INVISIBLE);
             connectionerrorview.setVisibility(View.VISIBLE);
             progress.setVisibility(View.INVISIBLE);
@@ -207,12 +418,105 @@ public class AvaliableJobsList extends Fragment implements View.OnClickListener,
 
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        /*final SharedPreferences sPref = getActivity().getSharedPreferences(Config.TOKEN_PREF, Context.MODE_PRIVATE);
+        boolean is_delay = sPref.getBoolean(Config.TOKEN_ISDELAY, false);
+
+        if(is_delay){
+
+            MaterialDialog dialog = new MaterialDialog.Builder(getActivity())
+                    .title("Please Report your Late")
+                    .customView(R.layout.forgot_email_layout, true)
+                    .positiveText("SEND")
+                    .positiveColor(R.color.primary)
+                    .positiveColorRes(R.color.primary)
+                    .cancelable(false)
+                    .callback(new MaterialDialog.ButtonCallback() {
+                                  @Override
+                                  public void onPositive(final MaterialDialog dialog) {
+                                      super.onPositive(dialog);
+
+                                      EditText et_email = (EditText) dialog.findViewById(R.id.et_email_forgotpwd);
+
+                                      if (!et_email.getText().toString().equals("")) {
+
+                                          AvaliableJobsAPI.getInstance().getService().forgetPassword(et_email.getText().toString(),
+                                                  new Callback<String>() {
+                                                      @Override
+                                                      public void success(String s, Response response) {
+                                                          Toast.makeText(getActivity(), "Success", Toast.LENGTH_SHORT).show();
+
+                                                          sPref.edit().putBoolean(Config.TOKEN_ISDELAY, false).commit();
+
+                                                      }
+
+                                                      @Override
+                                                      public void failure(RetrofitError error) {
+                                                          if (error.getBody() == null) {
+                                                              Toast.makeText(getActivity(), "Cannot connect to server!", Toast.LENGTH_SHORT).show();
+                                                          } else {
+
+                                                              String errmsg = error.getBody().toString();
+                                                              String errcode = "";
+
+
+                                                              try {
+                                                                  JSONObject errobj = new JSONObject(errmsg);
+
+                                                                  errcode = errobj.getJSONObject("err").getString("message");
+
+                                                                  Toast.makeText(getActivity(), errcode, Toast.LENGTH_SHORT).show();
+
+                                                              } catch (JSONException e) {
+                                                                  e.printStackTrace();
+                                                              }
+
+
+
+                                                          }
+                                                      }
+                                                  });
+
+                                      } else {
+                                          Toast.makeText(getActivity(), "Please Input Email!", Toast.LENGTH_SHORT).show();
+                                      }
+
+
+                                      dialog.dismiss();
+                                  }
+
+                                  @Override
+                                  public void onNegative(MaterialDialog dialog) {
+                                      super.onNegative(dialog);
+
+                                      dialog.dismiss();
+
+                                  }
+                              }
+
+                    )
+                    .build();
+
+
+            dialog.show();
+
+            EditText et_email = (EditText) dialog.findViewById(R.id.et_email_forgotpwd);
+            et_email.setHint("Reason");
+
+        }*/
+
+
+
+    }
+
     protected void startLocationUpdates() {
         // The final argument to {@code requestLocationUpdates()} is a LocationListener
         // (http://developer.android.com/reference/com/google/android/gms/location/LocationListener.html).
         LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
     }
-
 
 
     protected synchronized void buildGoogleApiClient() {
@@ -262,35 +566,119 @@ public class AvaliableJobsList extends Fragment implements View.OnClickListener,
 
                 while (i < jsonarray.length()) {
                     jobitem = new JobItem();
-                    JSONObject jsonobject1;
-                    JSONArray jsonarray1;
-                    jsonobject1 = jsonarray.getJSONObject(i);
 
-                    jobitem.set_id(jsonobject1.getString("_id"));
-                    jobitem.set_type(jsonobject1.getString("type"));
-                    jobitem.set_address(jsonobject1.getString("address"));
-                    jobitem.set_price(jsonobject1.getInt("price"));
-                    jobitem.set_status(jsonobject1.getString("status"));
-                    jobitem.set_createAt(jsonobject1.getString("createAt"));
-                    jobitem.set_latAndlan(jsonobject1.getJSONArray("address_ll").getLong(0), jsonobject1.getJSONArray("address_ll").getLong(1));
+                    JSONObject jsonobj = jsonarray.getJSONObject(i);
+
+                    if(!jsonobj.isNull("_id"))
+                        jobitem.set_id(jsonobj.getString("_id"));
+
+                    /*JSONObject requesterobj = jsonobj.getJSONObject("requester");
+
+                    if(requesterobj != null){
+
+                        if(requesterobj.getString("email") != null)
+                            jobitem.set_requester_email(requesterobj.getString("email"));
+
+                        if(requesterobj.getString("mobile_number") != null)
+                            jobitem.set_requester_mobile_number(requesterobj.getString("mobile_number"));*/
+/*
+                        if(requesterobj.getString("address") != null)
+                            jobitem.set_requester_address(requesterobj.getString("address"));*/
+
+                        /*if(requesterobj.getString("business_type") != null)
+                            jobitem.set_requester_business_type(requesterobj.getString("business_type"));
+*//*
+                        if(requesterobj.getString("business_address") != null)
+                            jobitem.set_requester_business_address(requesterobj.getString("business_address"));*/
 
 
-                    JSONObject jsonobject2 = jsonobject1.getJSONObject("requester");
-                    if (jsonobject2 != null) {
+                        //parsing json for requester picture
+                        /*JSONArray requester_pictures = requesterobj.getJSONArray("pictures");
 
-                        Log.i("APIData requester jsonobject", jsonobject2.toString());
-                        jobitem.set_requester_id(jsonobject2.getString("_id"));
-                        jobitem.set_requester_type(jsonobject2.getString("type"));
-                        jobitem.set_requester_name(jsonobject2.getString("name"));
-                        jobitem.set_requester_email(jsonobject2.getString("email"));
-                        jobitem.set_requester_business_type(jsonobject2.getString("business_type"));
-                        jobitem.set_requester_mobile_number(jsonobject2.getString("mobile_number"));
-                        jobitem.set_requester_address(jsonobject2.getString("address"));
-                        jobitem.set_requester_confirmed(jsonobject2.getString("confirmed"));
-                        jobitem.set_requester_latAndlan(jsonobject2.getJSONArray("business_address_ll").getLong(0), jsonobject2.getJSONArray("business_address_ll").getLong(1));
 
+                        if(requester_pictures.length() >0){
+                            List<String> pic_list = new ArrayList<String>();
+                            for(int j=0;j<requester_pictures.length();j++){
+
+                                JSONObject obj = requester_pictures.getJSONObject(j);
+
+                                if(!obj.isNull("path"))
+                                    pic_list.add(obj.getString("path"));
+
+                            }
+
+                        }
+
+
+
+                    }*/
+
+
+                    /*if(!jsonobj.isNull("type"))
+                        jobitem.set_type(jsonobj.getString("type"));*/
+
+                    if(!jsonobj.isNull("address"))
+                        jobitem.set_address(jsonobj.getString("address"));
+/*
+                    if(jsonobj.getString("receiver_name") != null)
+                        jobitem.set_receiver_name(jsonobj.getString("receiver_name"));*/
+
+                    /*if(jsonobj.getString("receiver_contact") != null)
+                        jobitem.set_receiver_contact(jsonobj.getString("receiver_contact"));
+
+                    if(jsonobj.getString("post_code") != null)
+                        jobitem.set_post_code(jsonobj.getString("post_code"));
+
+                    if(jsonobj.getJSONArray("pickup_ll") != null) {
+
+                        jobitem.set_pickup_lon((Double) jsonobj.getJSONArray("pickup_ll").get(0));
+                        jobitem.set_pickup_lat((Double) jsonobj.getJSONArray("pickup_ll").get(1));
 
                     }
+
+                    if(jsonobj.getJSONArray("address_ll") != null) {
+
+                        jobitem.set_address_lon((Double) jsonobj.getJSONArray("address_ll").get(0));
+                        jobitem.set_address_lat((Double) jsonobj.getJSONArray("address_ll").get(1));
+
+                    }*/
+
+
+                    //jobitem.set_reports(jsonobj.getString("reports"));
+                    //jobitem.set_rejectMessage(jsonobj.getString("rejectMessage"));
+
+                    if(!jsonobj.isNull("status"))
+                        jobitem.set_status(jsonobj.getString("status"));
+
+                    if(!jsonobj.isNull("pictures")) {
+
+                        JSONArray pictures = jsonobj.getJSONArray("pictures");
+
+                        List<String> pic_list1 = new ArrayList<String>();
+                        for (int j = 0; j < pictures.length(); j++) {
+
+                            JSONObject obj = pictures.getJSONObject(j);
+
+                            if (obj.getString("path") != null)
+                                pic_list1.add(obj.getString("path"));
+
+                        }
+
+                        if (pic_list1.size() > 0) {
+                            jobitem.set_pictures(pic_list1.get(0));
+
+                        }
+
+                    }
+
+                    if(jsonobj.getString("price") != null)
+                        jobitem.set_price(jsonobj.getString("price"));
+
+                    /*if(jsonobj.getString("createAt") != null)
+                        jobitem.set_createAt(jsonobj.getString("createAt"));*/
+
+
+
 
                     arraylist.add(jobitem);
 
@@ -340,7 +728,6 @@ public class AvaliableJobsList extends Fragment implements View.OnClickListener,
 
                 mGoogleApiClient.disconnect();
                 mGoogleApiClient.connect();
-                getDatafromServer();
             }
 
         }
@@ -350,7 +737,6 @@ public class AvaliableJobsList extends Fragment implements View.OnClickListener,
     @Override
     public void onStop() {
         super.onStop();
-        mGoogleApiClient.disconnect();
     }
 
     @Override
@@ -366,13 +752,9 @@ public class AvaliableJobsList extends Fragment implements View.OnClickListener,
             connectionerrorview.setVisibility(View.VISIBLE);
             progress.setVisibility(View.INVISIBLE);
         }else
-            getDatafromServer();
+            getDatafromServer(NOT_REFRESH);
 
-        /*if(Connection.isOnline(getActivity()))
-            getDatafromServer();
-        else
-            Toast.makeText(getActivity(), "not connected", Toast.LENGTH_SHORT).show();
-*/
+
     }
 
     @Override
@@ -386,8 +768,144 @@ public class AvaliableJobsList extends Fragment implements View.OnClickListener,
     }
 
     @Override
-    public void onLocationChanged(Location location) {
-        mLastLocation = location;
-        Log.i("AvaliableJobLocation", location.toString());
+    public void onLocationChanged(final Location location) {
+        //Log.i("AvaliableJobLocation", location.toString());
+
+        /*if(CompareLocation != null){
+
+            double dist = distance(location.getLatitude(), location.getLongitude(), mLastLocation.getLatitude(), mLastLocation.getLongitude(), 'K');
+
+            if(dist > 0.05){
+
+                updateCurrentLocation(location);
+
+                CompareLocation = location;
+
+                SharedPreferences sPref = getActivity().getSharedPreferences(Config.TOKEN_PREF, Context.MODE_PRIVATE);
+
+                    SharedPreferences.Editor editor = sPref.edit();
+                    editor.putInt(Config.TOKEN_LOCDELAY_COUNT, 0);
+                    editor.commit();
+
+            }
+
+            else if(dist < 0.05){
+
+                SharedPreferences sPref = getActivity().getSharedPreferences(Config.TOKEN_PREF, Context.MODE_PRIVATE);
+                int delay_count = sPref.getInt(Config.TOKEN_LOCDELAY_COUNT, 0);
+
+                Log.i("AvaliableJob_Count", String.valueOf(delay_count));
+                if(delay_count > 30){
+                    SharedPreferences.Editor editor = sPref.edit();
+                    editor.putBoolean(Config.TOKEN_ISDELAY, true);
+                    editor.putInt(Config.TOKEN_LOCDELAY_COUNT, 0);
+                    editor.commit();
+
+
+                }else{
+                    delay_count++;
+                    sPref.edit().putInt(Config.TOKEN_LOCDELAY_COUNT, delay_count).commit();
+
+                }
+
+            }
+
+
+
+
+
+        }else{
+
+            CompareLocation = location;
+
+            updateCurrentLocation(location);
+
+        }*/
+
+
     }
+
+
+    private void updateCurrentLocation(final Location location){
+
+        Long tsLong = System.currentTimeMillis();
+        final String ts = tsLong.toString();
+        SharedPreferences sPref = getActivity().getSharedPreferences(Config.TOKEN_PREF, Context.MODE_PRIVATE);
+        final String token = sPref.getString(Config.TOKEN, null);
+
+        JSONObject obj = new JSONObject();
+        try {
+            obj.put("location", location.getLongitude() + "," + location.getLatitude());
+            obj.put("timestamp", ts);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        String json = obj.toString();
+
+        try {
+            TypedInput in = new TypedByteArray("application/json", json.getBytes("UTF-8"));
+
+
+            AvaliableJobsAPI.getInstance().getService().updateLocation(token, in, new Callback<String>() {
+                @Override
+                public void success(String s, Response response) {
+                    Log.i("LOCATION UPDATE SUCCESS", location.getLongitude() + "," + location.getLatitude());
+                }
+
+                @Override
+                public void failure(RetrofitError error) {
+                    Log.i("regID", "Error");
+                    Log.i("regID", error.toString());
+                }
+            });
+
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+
+    private double distance(double lat1, double lon1, double lat2, double lon2, char unit) {
+
+        double theta = lon1 - lon2;
+
+        double dist = Math.sin(deg2rad(lat1)) * Math.sin(deg2rad(lat2)) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.cos(deg2rad(theta));
+
+        dist = Math.acos(dist);
+
+        dist = rad2deg(dist);
+
+        dist = dist * 60 * 1.1515;
+
+        if (unit == 'K') {
+
+            dist = dist * 1.609344;
+
+        } else if (unit == 'N') {
+
+            dist = dist * 0.8684;
+
+        }
+
+        return (dist);
+
+    }
+
+    private double rad2deg(double rad) {
+
+        return (rad * 180 / Math.PI);
+
+    }
+
+    private double deg2rad(double deg) {
+
+        return (deg * Math.PI / 180.0);
+
+    }
+
+
+
+
 }

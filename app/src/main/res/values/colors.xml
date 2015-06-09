@@ -1,11 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <color name="primary">#009688</color>
-    <color name="primaryDark">#00796b</color>
-    <color name="tranprimary">#99009688</color>
+    <color name="primary">#ff00cc</color>
+    <color name="primaryDark">#9c27b0</color>
+    <color name="tranprimary">#99ff00cc</color>
+
     <!--<color name="accent">#eeff41</color>-->
+    <!--<color name="accent">#e040fb</color>-->
     <color name="accent">#ffffff</color>
     <color name="accentLight">#F4FF81</color>
+    <color name="greycolor">#99000000</color>
+    <color name="tranWhite">#aaffffff</color>
+
+    <color name="white">#ffffff</color>
+    <color name="given">#993399</color>
+
+    <color name="drawertextcolor">#5d5d5d</color>
+
+    <color name="dialog_background">#33993399</color>
+    <color name="notification_light">#88ff0000</color>
+
 
 </resources>

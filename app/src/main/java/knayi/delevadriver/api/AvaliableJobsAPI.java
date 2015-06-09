@@ -48,8 +48,8 @@ public class AvaliableJobsAPI
 
 
     OkHttpClient okHttpClient = new OkHttpClient();
-    okHttpClient.setConnectTimeout(7000, TimeUnit.MILLISECONDS);
-    okHttpClient.setReadTimeout(7000, TimeUnit.MILLISECONDS);
+    okHttpClient.setConnectTimeout(15000, TimeUnit.MILLISECONDS);
+    okHttpClient.setReadTimeout(300000, TimeUnit.MILLISECONDS);
 
     final RestAdapter restAdapter = new
             RestAdapter.Builder().setLogLevel(RestAdapter.LogLevel.BASIC)

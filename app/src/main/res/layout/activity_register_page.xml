@@ -1,8 +1,40 @@
+
+
 <FrameLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?android:attr/actionBarSize"
+        android:theme="@style/Toolbar"
+        android:background="@color/primary"
+        app:theme="@style/Toolbar">
+
+
+        <TextView
+            android:id="@+id/toolbarTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:textSize="22dp"
+            android:textColor="@android:color/white"/>
+
+    </android.support.v7.widget.Toolbar>
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/main_background"
+        android:layout_marginTop="?android:attr/actionBarSize">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -11,16 +43,33 @@
         android:paddingRight="@dimen/activity_horizontal_margin"
         android:paddingTop="@dimen/activity_vertical_margin"
         android:paddingBottom="@dimen/activity_vertical_margin"
-        android:gravity="center">
+        android:gravity="center"
+        android:focusable="true" android:focusableInTouchMode="true">
 
 
+        <com.makeramen.RoundedImageView
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/register_profile_picture"
+            android:scaleType="fitCenter"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            app:riv_corner_radius="30dip"
+            app:riv_border_width="1dip"
+            app:riv_border_color="#333333"
+            app:riv_mutate_background="true"
+            app:riv_oval="true"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginBottom="30dp"/>
 
-        <LinearLayout
+
+        <!--<LinearLayout
             android:id="@+id/register_layout1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_alignParentLeft="true">
+            android:layout_alignParentLeft="true"
+            android:layout_below="@id/register_profile_picture">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -44,11 +93,11 @@
                 android:text="Password :"/>
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="38dp"
-                android:gravity="center_vertical"
-                android:layout_gravity="right"
-                android:text="Mobile No :"/>
+            android:layout_width="wrap_content"
+            android:layout_height="38dp"
+            android:gravity="center_vertical"
+            android:layout_gravity="right"
+            android:text="Mobile No :"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -57,57 +106,249 @@
                 android:layout_gravity="right"
                 android:text="Address :"/>
 
-            </LinearLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="38dp"
+                android:gravity="center_vertical"
+                android:layout_gravity="right"
+                android:text="NRC :"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="38dp"
+                android:gravity="center_vertical"
+                android:layout_gravity="right"
+                android:text="Vehicle :"/>
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="38dp"
+                android:gravity="center_vertical"
+                android:layout_gravity="right"
+                android:text="Credit Card Type :"/>
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="38dp"
+                android:gravity="center_vertical"
+                android:layout_gravity="right"
+                android:text="Credit Card No :"/>
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="38dp"
+                android:gravity="center_vertical"
+                android:layout_gravity="right"
+                android:text="Credit Card Exp :"/>
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="38dp"
+                android:gravity="center_vertical"
+                android:layout_gravity="right"
+                android:text="Credit Card CVV :"/>
+
+
+
+
+            </LinearLayout>-->
 
 
         <LinearLayout
             android:id="@+id/register_layout2"
-            android:layout_toRightOf="@id/register_layout1"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:orientation="vertical"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp">
+            android:layout_below="@id/register_profile_picture">
 
 
             <EditText
                 android:id="@+id/register_name"
-                android:layout_width="200dp"
-                android:layout_height="35dp"
+                android:layout_width="match_parent"
+                android:textSize="18sp"
+                android:background="@drawable/rounded_border2"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:padding="10dp"
+                android:layout_height="wrap_content"
+                android:hint="Name"
                 android:singleLine="true"/>
 
             <EditText
                 android:id="@+id/register_email"
-                android:layout_width="200dp"
+                android:layout_width="match_parent"
+                android:textSize="18sp"
+                android:background="@drawable/rounded_border2"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:padding="10dp"
                 android:layout_height="wrap_content"
                 android:inputType="textEmailAddress"
+                android:hint="Email"
                 android:singleLine="true"/>
 
 
             <EditText
                 android:id="@+id/register_password"
-                android:layout_width="200dp"
+                android:layout_width="match_parent"
+                android:textSize="18sp"
+                android:background="@drawable/rounded_border2"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:padding="10dp"
                 android:layout_height="wrap_content"
                 android:inputType="textPassword"
+                android:hint="Password"
                 android:singleLine="true"/>
 
 
             <EditText
 
                 android:id="@+id/register_phone"
-                android:layout_width="200dp"
+                android:layout_width="match_parent"
+                android:textSize="18sp"
+                android:background="@drawable/rounded_border2"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:padding="10dp"
                 android:layout_height="wrap_content"
                 android:inputType="phone"
+                android:hint="Phone"
                 android:singleLine="true"/>
 
 
             <EditText
 
                 android:id="@+id/register_address"
-                android:layout_width="200dp"
+                android:layout_width="match_parent"
+                android:textSize="18sp"
+                android:background="@drawable/rounded_border2"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:padding="10dp"
+                android:layout_height="wrap_content"
+                android:hint="Address"
+                android:singleLine="true" />
+
+            <EditText
+
+                android:id="@+id/register_nrc"
+                android:layout_width="match_parent"
+                android:textSize="18sp"
+                android:background="@drawable/rounded_border2"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:padding="10dp"
+                android:layout_height="wrap_content"
+                android:hint="IC No."
+                android:singleLine="true" />
+
+            <EditText
+
+                android:id="@+id/register_vehicle"
+                android:layout_width="match_parent"
+                android:textSize="18sp"
+                android:background="@drawable/rounded_border2"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:padding="10dp"
+                android:layout_height="wrap_content"
+                android:hint="Vehicle"
+                android:singleLine="true" />
+
+            <!--<EditText
+
+                android:id="@+id/register_credit_type"
+                android:layout_width="match_parent"
+                android:textSize="18sp"
+                android:background="@drawable/rounded_border2"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
                 android:layout_height="wrap_content"
                 android:singleLine="true" />
 
+
+            <EditText
+
+                android:id="@+id/register_credit_no"
+                android:layout_width="match_parent"
+                android:textSize="18sp"
+                android:background="@drawable/rounded_border2"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:inputType="number"/>
+
+
+            <EditText
+
+                android:id="@+id/register_credit_exp"
+                android:layout_width="match_parent"
+                android:textSize="18sp"
+                android:background="@drawable/rounded_border2"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:inputType="date"/>
+
+            <EditText
+
+                android:id="@+id/register_credit_cvv"
+                android:layout_width="match_parent"
+                android:textSize="18sp"
+                android:background="@drawable/rounded_border2"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_height="wrap_content"
+                android:singleLine="true" />-->
+
+
+
+
+
             </LinearLayout>
+
+        <CheckBox
+            android:id="@+id/termscheckbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/register_layout2"
+            android:text="I agree to the "
+            android:textSize="14sp"
+            android:layout_marginLeft="10dp"
+            android:paddingLeft="30dp"/>
+
+
+
+        <TextView
+            android:id="@+id/termsLink"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:text="Terms and Condition"
+            android:textColor="@android:color/holo_red_light"
+            android:layout_below="@id/register_layout2"
+            android:textSize="14sp"
+            android:layout_toRightOf="@id/termscheckbox"
+            android:gravity="center_vertical"/>
+
+
 
         <TextView
             android:id="@+id/register_button"
@@ -115,10 +356,13 @@
             android:layout_height="45dp"
             android:text="Register"
             android:gravity="center"
+            android:textSize="18sp"
+            android:textColor="@android:color/white"
             android:background="@drawable/loginselector"
             android:layout_marginTop="20dp"
             android:layout_alignRight="@id/register_layout2"
-            android:layout_below="@id/register_layout2"/>
+            android:layout_below="@id/termsLink"
+            android:layout_centerHorizontal="true"/>
 
     </RelativeLayout>
 
@@ -139,5 +383,10 @@
         app:progressIndeterminate="true"
         android:visibility="invisible"/>
 
+    </FrameLayout>
+
+    </ScrollView>
 
     </FrameLayout>
+
+

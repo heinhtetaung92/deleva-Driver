@@ -3,7 +3,6 @@ package knayi.delevadriver.GCM;
 import android.app.IntentService;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -11,24 +10,26 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Bundle;
-import android.os.IBinder;
+import android.os.PowerManager;
 import android.os.SystemClock;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import knayi.delevadriver.DrawerMainActivity;
+import knayi.delevadriver.JobDetailActivity;
 import knayi.delevadriver.R;
-import knayi.delevadriver.TabMainActivity;
+import knayi.delevadriver.TabMainFragment;
 
 /**
  * Created by heinhtetaung on 2/25/15.
@@ -62,11 +63,11 @@ public class GcmIntentService extends IntentService {
              */
             if (GoogleCloudMessaging.
                     MESSAGE_TYPE_SEND_ERROR.equals(messageType)) {
-                sendNotification("Send error: " + extras.toString(), null);
+                //sendNotification("Send error: " + extras.toString(), null);
             } else if (GoogleCloudMessaging.
                     MESSAGE_TYPE_DELETED.equals(messageType)) {
-                sendNotification("Deleted messages on server: " +
-                        extras.toString(), null);
+                /*sendNotification("Deleted messages on server: " +
+                        extras.toString(), null);*/
                 // If it's a regular GCM message, do some work.
             } else if (GoogleCloudMessaging.
                     MESSAGE_TYPE_MESSAGE.equals(messageType)) {
@@ -81,7 +82,24 @@ public class GcmIntentService extends IntentService {
                 }
                 Log.i(TAG, "Completed work @ " + SystemClock.elapsedRealtime());
                 // Post notification of received message.
-                sendNotification(extras.getString("data"), extras.getString("type"));
+
+                String type = extras.getString("type");
+
+                if(type.equals("app-noti")){
+                    Log.i("NOTI", "APP NOTI");
+                    sendGeneralNotification(extras.getString("message"));
+                }
+                else if(type.equals("job-noti")){
+                    Log.i("NOTI", "JOB NOTI");
+                    sendNewJobNotification(extras.getString("message"), extras.getString("job_id"));
+                }
+                else if(type.equals("job-nego-agree")){
+                    Log.i("NOTI", "JOB NEGO NOTI");
+                    sendJobNegoNotification(extras.getString("message"), extras.getString("job_id"), extras.getString("agree"), extras.getString("price"));
+                }
+
+
+
                 Log.i(TAG, "Received: " + extras.toString());
             }
         }
@@ -92,58 +110,180 @@ public class GcmIntentService extends IntentService {
     // Put the message into a notification and post it.
     // This is just one simple example of what you might choose to do with
     // a GCM message.
-    private void sendNotification(final String msg, String type) {
+
+
+
+
+    private void sendGeneralNotification(final String msg) {
 
         Log.i("Message", msg);
         mNotificationManager = (NotificationManager)
                 this.getSystemService(Context.NOTIFICATION_SERVICE);
 
-        if(type.equals("noti_message")){
-            String message = null, imgurl = null;
 
-            try {
-                JSONObject jsonobj = new JSONObject(msg);
+                    Intent intent = new Intent(this, DrawerMainActivity.class);
 
-                if(jsonobj != null) {
-                    message = jsonobj.getString("message");
-                    imgurl = jsonobj.getString("images");
 
                     PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
-                            new Intent(this, TabMainActivity.class), 0);
+                            intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                    Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+
 
                     NotificationCompat.Builder mBuilder =
                             new NotificationCompat.Builder(this)
                                     .setSmallIcon(R.drawable.ic_launcher)
-                                    .setContentTitle("New Job near you!")
+                                    .setContentTitle("Deleva")
                                     .setStyle(new NotificationCompat.BigTextStyle()
                                             .bigText(msg))
+                                    .setAutoCancel(true)
+                                    .setSound(alarmSound)
+                                    .setLights(R.color.notification_light, 1000, 1000)
                                     .setContentText(msg);
+
+
 
                     mBuilder.setContentIntent(contentIntent);
                     mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());
 
-                }
-                else{
-
-                }
 
 
+//Wake Device code
+        PowerManager pm = (PowerManager)getSystemService(Context.POWER_SERVICE);
 
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+        boolean isScreenOn = pm.isScreenOn();
 
+        Log.e("screen on.................................", ""+isScreenOn);
 
-        /*Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.google.com"));
-        startActivity(browserIntent);*/
+        if(isScreenOn==false)
+        {
 
-            //Intent intent = new Intent(this, DrawerMainActivity.class);
+            PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK |PowerManager.ACQUIRE_CAUSES_WAKEUP |PowerManager.ON_AFTER_RELEASE,"MyLock");
 
+            wl.acquire(10000);
+            PowerManager.WakeLock wl_cpu = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,"MyCpuLock");
 
+            wl_cpu.acquire(10000);
         }
 
 
+    }
 
+    private void sendNewJobNotification(final String msg, final String jobid) {
+
+
+        //define sound
+        Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+
+
+        NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(this)
+                        .setSmallIcon(R.drawable.ic_launcher)
+                        .setContentTitle("New Job near you!")
+                        .setContentText(msg)
+                        //set sound
+                        .setSound(alarmSound)
+                        //set light
+                        .setLights(R.color.notification_light, 1000, 1000)
+                        .setAutoCancel(true);
+        Intent resultIntent = new Intent(this, JobDetailActivity.class);
+        resultIntent.putExtra("job_id", jobid);
+        resultIntent.putExtra("type", "job-noti");
+
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+        stackBuilder.addParentStack(JobDetailActivity.class);
+        stackBuilder.addNextIntent(resultIntent);
+        PendingIntent resultPendingIntent =
+                stackBuilder.getPendingIntent(
+                        0,
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                );
+        mBuilder.setContentIntent(resultPendingIntent);
+        NotificationManager mNotificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());
+
+        //Wake Device code
+        PowerManager pm = (PowerManager)getSystemService(Context.POWER_SERVICE);
+
+        boolean isScreenOn = pm.isScreenOn();
+
+        Log.e("screen on.................................", ""+isScreenOn);
+
+        if(isScreenOn==false)
+        {
+
+            PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK |PowerManager.ACQUIRE_CAUSES_WAKEUP |PowerManager.ON_AFTER_RELEASE,"MyLock");
+
+            wl.acquire(10000);
+            PowerManager.WakeLock wl_cpu = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,"MyCpuLock");
+
+            wl_cpu.acquire(10000);
+        }
+
+    }
+
+    private void sendJobNegoNotification(final String msg, final String jobid, final String agree, final String price) {
+
+
+        Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+
+
+        Log.i("NOTI_JOBID", jobid);
+
+        String agreemsg;
+
+        if(agree.equals("true")){
+            agreemsg = "Your request is agreed with " + price;
+        }
+        else{
+            agreemsg = "Your request is not agreed!";
+        }
+
+        NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(this)
+                        .setSmallIcon(R.drawable.ic_launcher)
+                        .setContentTitle(agreemsg)
+                        .setContentText(msg)
+                        .setSound(alarmSound)
+                        .setLights(R.color.notification_light, 1000, 1000)
+                        .setAutoCancel(true);
+        Intent resultIntent = new Intent(this, JobDetailActivity.class);
+        resultIntent.putExtra("job_id", jobid);
+        resultIntent.putExtra("type", "job-nego-agree");
+        resultIntent.putExtra("agree", agree);
+        resultIntent.putExtra("price", price);
+
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+        stackBuilder.addParentStack(JobDetailActivity.class);
+        stackBuilder.addNextIntent(resultIntent);
+        PendingIntent resultPendingIntent =
+                stackBuilder.getPendingIntent(
+                        0,
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                );
+        mBuilder.setContentIntent(resultPendingIntent);
+        NotificationManager mNotificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());
+
+
+        //Wake Device code
+        PowerManager pm = (PowerManager)getSystemService(Context.POWER_SERVICE);
+
+        boolean isScreenOn = pm.isScreenOn();
+
+        Log.e("screen on.................................", ""+isScreenOn);
+
+        if(isScreenOn==false)
+        {
+
+            PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK |PowerManager.ACQUIRE_CAUSES_WAKEUP |PowerManager.ON_AFTER_RELEASE,"MyLock");
+
+            wl.acquire(10000);
+            PowerManager.WakeLock wl_cpu = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,"MyCpuLock");
+
+            wl_cpu.acquire(10000);
+        }
 
     }
 

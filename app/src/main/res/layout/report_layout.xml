@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <!--<EditText
+        android:id="@+id/report_et_price"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Negotiate Price"/>-->
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Edit Price"
+        android:textColor="@android:color/white"
+        android:textSize="22dp"/>
+
+
+    <CheckBox
+        android:id="@+id/report_cb_overweight"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Over Weight"
+        android:background="@color/white"
+        android:paddingLeft="30dp"
+        android:checked="false"/>
+
+    <Spinner
+        android:id="@+id/report_spinner_overweight"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:focusable="false"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Type"
+        android:textColor="@color/white"
+        android:textStyle="bold"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#b3b3b3"
+        android:paddingBottom="5dp"/>
+
+    <CheckBox
+        android:id="@+id/report_cb_express"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Express"
+        android:background="@color/white"
+        android:paddingLeft="30dp"
+        android:checked="false"/>
+
+    <CheckBox
+        android:id="@+id/report_cb_refrigerated"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Refrigerated"
+        android:background="@color/white"
+        android:paddingLeft="30dp"
+        android:checked="false"/>
+    
+
+    <TextView
+        android:id="@+id/report_price_tag"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:layout_margin="10dp"/>
+
+    <EditText
+        android:id="@+id/report_et_message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Message"
+        android:background="@color/white"
+        android:padding="8dp"/>
+
+
+
+
+
+
+
+</LinearLayout>

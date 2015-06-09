@@ -5,6 +5,8 @@
       <module fileurl="file://$PROJECT_DIR$/DelevaDriver.iml" filepath="$PROJECT_DIR$/DelevaDriver.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/deleva-Driver.iml" filepath="$PROJECT_DIR$/deleva-Driver.iml" />
+      <module fileurl="file://$PROJECT_DIR$/image-chooser-library/image-chooser-library.iml" filepath="$PROJECT_DIR$/image-chooser-library/image-chooser-library.iml" />
+      <module fileurl="file://$PROJECT_DIR$/stripe/stripe.iml" filepath="$PROJECT_DIR$/stripe/stripe.iml" />
     </modules>
   </component>
 </project>

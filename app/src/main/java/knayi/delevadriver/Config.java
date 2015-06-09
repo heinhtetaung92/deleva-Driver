@@ -11,4 +11,19 @@ public class Config
     public static String TOKEN_PREF = "drivertokenpref";
     public static String TOKEN = "drivertoken";
 
+    public static String TOKEN_SERVICE_ALIVE = "servicealive";
+    public static String TOKEN_JOBID = "biddedJobid";
+
+    public static String TOKEN_LOCDELAY_COUNT = "locationdelaycount";
+    public static String TOKEN_DELAY = "delay";
+
+    public static String ACTIVE = "A";
+    public static String POST = "T";
+    public static String PENDING = "P";
+    public static String BID = "B";
+    public static String PROCESS = "S";
+    public static String FINISH = "F";
+    public static String DELETE = "D";
+
+
 }

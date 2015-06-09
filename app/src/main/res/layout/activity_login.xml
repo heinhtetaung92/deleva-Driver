@@ -1,8 +1,15 @@
-<FrameLayout
+<ScrollView
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/main_background" >
+
+<FrameLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginTop="80dp"
+    android:focusable="true" android:focusableInTouchMode="true">
 
 
 
@@ -10,7 +17,6 @@
         android:id="@+id/login_mainlayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
         android:paddingTop="@dimen/activity_vertical_margin"
@@ -21,56 +27,105 @@
             android:layout_width="150dp"
             android:layout_height="150dp"
             android:layout_marginLeft="30dp"
-            android:src="@drawable/deleva"/>
+            android:src="@drawable/deleva_dispatcher_pink"
+            android:layout_centerHorizontal="true"/>
+
+        <!--<TextView
+            android:id="@+id/appname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@id/login_imageview"
+            android:textSize="22dp"
+            android:textColor="#636363"
+            android:text="D E L E V A"
+            android:layout_marginBottom="20dp"/>-->
+
+
+        <TextView
+            android:id="@+id/text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Anything, Anytime, Anyone"
+            android:gravity="center"
+            android:layout_marginTop="16dp"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@id/login_imageview"/>
 
         <EditText
             android:id="@+id/login_username"
-            android:layout_width="200dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/login_imageview"
+            android:layout_below="@id/text"
             android:singleLine="true"
-            android:textColor="@color/primary"
+            android:textSize="18sp"
+            android:background="@drawable/rounded_border2"
             android:inputType="textEmailAddress"
-            android:textColorHint="@color/tranprimary"
+            android:textColorHint="#636363"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:padding="10dp"
+            android:focusableInTouchMode="true"
             android:hint="Email"/>
 
         <EditText
             android:id="@+id/login_password"
-            android:layout_width="200dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/login_username"
             android:inputType="textPassword"
             android:singleLine="true"
-            android:textColor="@color/primary"
-            android:textColorHint="@color/tranprimary"
+            android:textSize="18sp"
+            android:background="@drawable/rounded_border2"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:padding="10dp"
+            android:textColorHint="#636363"
+            android:focusableInTouchMode="true"
             android:hint="Password"/>
 
-    =
 
         <TextView
-            android:id="@+id/login_button"
-            android:layout_width="200dp"
-            android:layout_height="40dp"
-            android:text="Login"
-            android:background="@drawable/loginselector"
-            android:gravity="center"
-            android:layout_marginTop="15dp"
-            android:layout_below="@+id/login_password"
-            android:layout_alignRight="@+id/login_password"/>
+            android:id="@+id/login_forgotpassword"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@drawable/registertextselector"
+            android:layout_below="@id/login_password"
+            android:paddingTop="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_alignLeft="@id/login_password"
+            android:text="Forgot Password?"/>
 
         <TextView
             android:id="@+id/login_register"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@drawable/registertextselector"
-            android:layout_below="@id/login_button"
-            android:layout_marginTop="15dp"
-            android:padding="10dp"
-            android:text="No account? Register Here."/>
+            android:layout_below="@id/login_password"
+            android:layout_marginTop="8dp"
+            android:paddingTop="8dp"
+            android:layout_alignRight="@id/login_password"
+            android:text="Don't have an account yet?"/>
 
+
+
+
+        <Button
+            android:id="@+id/login_button"
+            android:layout_width="150dp"
+            android:layout_height="64dp"
+            android:background="@drawable/login_bg_dropshadow"
+            android:layout_marginTop="80dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="10dp"
+            android:gravity="center"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@id/login_register"/>
 
     </RelativeLayout>
-
 
     <View
         android:id="@+id/login_progresswheel_background"
@@ -91,3 +146,5 @@
 
 
     </FrameLayout>
+
+   </ScrollView>

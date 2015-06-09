@@ -1,19 +1,27 @@
 package knayi.delevadriver;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
@@ -25,8 +33,8 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
-import cn.pedant.SweetAlert.SweetAlertDialog;
 import knayi.delevadriver.api.AvaliableJobsAPI;
+import knayi.delevadriver.model.MyTypeFace;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -36,10 +44,12 @@ import retrofit.mime.TypedInput;
 public class LoginActivity extends ActionBarActivity implements View.OnClickListener {
 
 
-    TextView login, register;
+    TextView register, forgotpassword;
+    Button login;
     EditText username, password;
     ProgressWheel progress;
     View progressbackground;
+
 
 
     public static final String EXTRA_MESSAGE = "message";
@@ -52,7 +62,9 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
 
     Context context;
 
-    String SENDER_ID = "566326671565";
+    String SENDER_ID = "979085422591";
+
+    //public static Typeface faceCicle, faceCicleBold, faceCicleItalic;
 
 
     @Override
@@ -63,13 +75,9 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
 
         context = getApplicationContext();
 
-
-
-
-
-
-        login = (TextView) findViewById(R.id.login_button);
+        login = (Button) findViewById(R.id.login_button);
         register = (TextView) findViewById(R.id.login_register);
+        forgotpassword = (TextView) findViewById(R.id.login_forgotpassword);
 
         username = (EditText) findViewById(R.id.login_username);
         password = (EditText) findViewById(R.id.login_password);
@@ -78,15 +86,51 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
 
         progress = (ProgressWheel) findViewById(R.id.progress_wheel);
 
+
         progressbackground.bringToFront();
         progress.bringToFront();
         login.setOnClickListener(this);
         register.setOnClickListener(this);
+        forgotpassword.setOnClickListener(this);
+
+
+
+        //faceCicle = Typeface.createFromAsset(this.getAssets(), "fonts/ciclesemi.ttf");
+        //faceCicleBold = Typeface.createFromAsset(this.getAssets(), "fonts/ciclegordita.ttf");//Cicle_Gordita.ttf
+        //faceCicleItalic = Typeface.createFromAsset(this.getAssets(), "fonts/ciclesemiitalic.ttf");
+
+        TextView text = (TextView) findViewById(R.id.text);
+        text.setTypeface(MyTypeFace.get(LoginActivity.this, MyTypeFace.NORMAL));
+        text.setTextColor(getResources().getColor(R.color.drawertextcolor));
+
+
+
+
+        username.setTypeface(MyTypeFace.get(LoginActivity.this, MyTypeFace.NORMAL));
+        password.setTypeface(MyTypeFace.get(LoginActivity.this, MyTypeFace.NORMAL));
+
+        /*username.setLetterSpacing(5);
+        password.setLetterSpacing(5);*/
+
+        login.setTypeface(MyTypeFace.get(LoginActivity.this, MyTypeFace.BOLD));
+        register.setTypeface(MyTypeFace.get(LoginActivity.this, MyTypeFace.NORMAL));
+        forgotpassword.setTypeface(MyTypeFace.get(LoginActivity.this, MyTypeFace.NORMAL));
 
         SharedPreferences sPref = getApplicationContext().getSharedPreferences(Config.TOKEN_PREF, MODE_PRIVATE);
         if(sPref.getString(Config.TOKEN, null) != null){
-            startActivity(new Intent(this, TabMainActivity.class));
+
+            Intent intent = new Intent(this, DrawerMainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            finish();
         }
+
+        progressbackground.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
 
 
     }
@@ -98,7 +142,7 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
      * Stores the registration ID and app versionCode in the application's
      * shared preferences.
      */
-    private void registerInBackground() {
+    private void registerInBackground(final String token) {
 
         new AsyncTask() {
 
@@ -119,7 +163,11 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
                     // The request to your server should be authenticated if your app
                     // is using accounts.
                     //sendRegistrationIdToBackend(regid);
-                    sendRegisterationToServer(regid);
+                    Log.i("GCM Regid", regid);
+
+                    sendRegistrationIdToBackend(regid, token);
+
+
 
                     // For this demo: we don't need to send it because the device
                     // will send upstream messages to a server that echo back the
@@ -147,25 +195,79 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
     }
 
 
-    private void sendRegisterationToServer(String regID){
+
+
+    /**
+     * Sends the registration ID to your server over HTTP, so it can use GCM/HTTP
+     * or CCS to send messages to your app. Not needed for this demo since the
+     * device sends upstream messages to a server that echoes back the message
+     * using the 'from' address in the message.
+     */
+    private void sendRegistrationIdToBackend(String regID, String token) {
+        // Your implementation here.
 
         if(regID == null){
             // cannot register to GCM server
 
-            new SweetAlertDialog(LoginActivity.this, SweetAlertDialog.ERROR_TYPE)
-                    .setTitleText("Oops...")
-                    .setContentText("Cannot register to GCM Server")
-                    .show();
 
-        }else{
-            String uniquekey = Build.SERIAL + android.provider.Settings.Secure.getString(getApplicationContext().getContentResolver(),
-                    android.provider.Settings.Secure.ANDROID_ID);
+            /*final Dialog dialog = new Dialog(this);
+            dialog.setTitle("");
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            dialog.setContentView(R.layout.custom_dialog_textview);
+            dialog.setCancelable(true);
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+
+            TextView dTitle = (TextView) dialog.findViewById(R.id.dialog_title);
+            TextView dContentText = (TextView) dialog.findViewById(R.id.dialog_contenttext);
+            dTitle.setTypeface(faceCicle);
+            dContentText.setTypeface(faceCicle);
+
+
+            dTitle.setText("");
+            dContentText.setText("Cannot register to Server");
+
+
+            Button dialogButton = (Button) dialog.findViewById(R.id.dialog_positive);
+            dialogButton.setTypeface(faceCicle);
+            // if button is clicked, close the custom dialog
+            dialogButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.dismiss();
+                }
+            });
+
+            dialog.show();*/
+
+            MaterialDialog dialog = new MaterialDialog.Builder(this)
+                    .title("")
+                    .backgroundColorRes(R.color.primary)
+                    .customView(R.layout.custom_message_dialog, false)
+                    .positiveText("OK")
+                    .positiveColor(R.color.white)
+                    .positiveColorRes(R.color.white)
+                    .typeface("ciclefina", "ciclegordita")
+                    .build();
+
+            dialog.show();
+
+            TextView txt_title = (TextView) dialog.findViewById(R.id.dialog_title);
+            TextView txt_message = (TextView) dialog.findViewById(R.id.dialog_message);
+            txt_title.setTypeface(MyTypeFace.get(LoginActivity.this, MyTypeFace.NORMAL));
+            txt_message.setTypeface(MyTypeFace.get(LoginActivity.this, MyTypeFace.NORMAL));
+
+            txt_message.setText("Cannot register to Server");
+
+
+
+        }else {
+
+
+            Log.i("regID", regID);
 
             JSONObject obj = new JSONObject();
             try {
-                obj.put("email", username.getText().toString());
-                obj.put("password", password.getText().toString());
-                obj.put("uuid", uniquekey);
                 obj.put("key", regID);
                 obj.put("client_type", "android");
             } catch (JSONException e) {
@@ -174,113 +276,47 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
 
             String json = obj.toString();
 
-            Log.i("JsonOBj", json);
             try {
                 TypedInput in = new TypedByteArray("application/json", json.getBytes("UTF-8"));
 
-                AvaliableJobsAPI.getInstance().getService().getToken(in, new Callback<String>() {
+
+                AvaliableJobsAPI.getInstance().getService().sendGCMRegisterID(token, in, new Callback<String>() {
                     @Override
                     public void success(String s, Response response) {
-
-
-                        try{
-
-                            JSONObject data = new JSONObject(s);
-                            if(data.getString("token") != null){
-                                SharedPreferences sPref = getApplicationContext().getSharedPreferences(Config.TOKEN_PREF, MODE_PRIVATE);
-                                SharedPreferences.Editor editor = sPref.edit();
-                                String token = data.getString("token");
-                                editor.putString(Config.TOKEN, token);
-                                editor.commit();
-                                Log.i("TOKEN", token);
-                            }else{
-                                new SweetAlertDialog(LoginActivity.this, SweetAlertDialog.ERROR_TYPE)
-                                        .setTitleText("Oops...")
-                                        .setContentText("Cannot access Account")
-                                        .show();
-                            }
-
-                        }catch(JSONException exp){
-                            exp.printStackTrace();
-                        }
-
-                        progress.setVisibility(View.INVISIBLE);
-                        progressbackground.setVisibility(View.INVISIBLE);
-
-                        finish();
-                        startActivity(new Intent(getApplicationContext(), TabMainActivity.class));
-
-
-
+                        Log.i("regID", s.toString());
                     }
 
                     @Override
                     public void failure(RetrofitError error) {
+                        if (error.getBody() == null) {
+                            Toast.makeText(LoginActivity.this, "Cannot connect to server!", Toast.LENGTH_SHORT).show();
+                        } else {
 
-                        progress.setVisibility(View.INVISIBLE);
-                        progressbackground.setVisibility(View.INVISIBLE);
-
-                        new SweetAlertDialog(LoginActivity.this, SweetAlertDialog.ERROR_TYPE)
-                                .setTitleText("Oops...")
-                                .setContentText("UserName or Password is Incorrect!")
-                                .show();
+                            String errmsg = error.getBody().toString();
+                            String errcode = "";
 
 
+                            try {
+                                JSONObject errobj = new JSONObject(errmsg);
+
+                                errcode = errobj.getJSONObject("err").getString("message");
+
+                                Toast.makeText(LoginActivity.this, errcode, Toast.LENGTH_SHORT).show();
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
+
+
+                        }
                     }
                 });
 
-            }catch (UnsupportedEncodingException exp1){
-                exp1.printStackTrace();
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
             }
-        }
 
-
-
-    }
-
-    /**
-     * Sends the registration ID to your server over HTTP, so it can use GCM/HTTP
-     * or CCS to send messages to your app. Not needed for this demo since the
-     * device sends upstream messages to a server that echoes back the message
-     * using the 'from' address in the message.
-     */
-    private void sendRegistrationIdToBackend(String regID) {
-        // Your implementation here.
-        Log.i("regID", regID);
-        String uniquekey = Build.SERIAL + android.provider.Settings.Secure.getString(getApplicationContext().getContentResolver(),
-                android.provider.Settings.Secure.ANDROID_ID);
-
-        JSONObject obj = new JSONObject();
-        try {
-            obj.put("status", "A");
-            obj.put("reg_id", regID);
-            obj.put("unique_key", uniquekey);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        String json = obj.toString();
-
-        try {
-            TypedInput in = new TypedByteArray("application/json", json.getBytes("UTF-8"));
-
-
-            /*ProductsAPI.getInstance().getService().sendRegisterationID(in, new Callback<String>() {
-                @Override
-                public void success(String s, Response response) {
-                    Log.i("regID", s.toString());
-                    storeRegistrationId(context, regid);
-                }
-
-                @Override
-                public void failure(RetrofitError error) {
-                    Log.i("regID", "Error");
-                    Log.i("regID", error.toString());
-                }
-            });*/
-
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
         }
 
 
@@ -369,9 +405,57 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
             case R.id.login_button:
 
                 if(username.getText().toString().equals("") || password.getText().toString().equals("")){
-                    new SweetAlertDialog(LoginActivity.this, SweetAlertDialog.WARNING_TYPE)
-                            .setTitleText("Please fill Name and Password")
-                            .show();
+
+
+                    /*final Dialog dialog = new Dialog(this);
+                    dialog.setTitle("");
+                    dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                    dialog.setContentView(R.layout.custom_dialog_textview);
+
+                    dialog.setCancelable(true);
+                    dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+
+                    TextView dTitle = (TextView) dialog.findViewById(R.id.dialog_title);
+                    TextView dContentText = (TextView) dialog.findViewById(R.id.dialog_contenttext);
+                    dTitle.setTypeface(faceCicle);
+                    dContentText.setTypeface(faceCicle);
+
+                    dTitle.setText("");
+                    dContentText.setText("Please type email and password!");
+
+
+                    Button dialogButton = (Button) dialog.findViewById(R.id.dialog_positive);
+                    dialogButton.setTypeface(faceCicle);
+                    // if button is clicked, close the custom dialog
+                    dialogButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            dialog.dismiss();
+                        }
+                    });
+
+                    dialog.show();*/
+
+                    MaterialDialog dialog = new MaterialDialog.Builder(this)
+                            .title("")
+                            .backgroundColorRes(R.color.primary)
+                            .customView(R.layout.custom_message_dialog, false)
+                            .positiveText("OK")
+                            .positiveColor(R.color.white)
+                            .positiveColorRes(R.color.white)
+                            .typeface("ciclefina", "ciclegordita")
+                            .build();
+                    dialog.show();
+
+                    TextView txt_title = (TextView) dialog.findViewById(R.id.dialog_title);
+                    TextView txt_message = (TextView) dialog.findViewById(R.id.dialog_message);
+                    txt_title.setTypeface(MyTypeFace.get(LoginActivity.this, MyTypeFace.NORMAL));
+                    txt_message.setTypeface(MyTypeFace.get(LoginActivity.this, MyTypeFace.NORMAL));
+
+                    txt_message.setText("Please type email and password!");
+
+
                 }
 
                 else
@@ -381,25 +465,210 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
                 progressbackground.setVisibility(View.VISIBLE);
 
 
-                    if (checkPlayServices()) {
-                        gcm = GoogleCloudMessaging.getInstance(context);
-                        regid = getRegistrationId(this);
+                    String uniquekey = Build.SERIAL + android.provider.Settings.Secure.getString(getApplicationContext().getContentResolver(),
+                            android.provider.Settings.Secure.ANDROID_ID);
 
-                        if (regid.isEmpty()) {
-                            registerInBackground();
-                        }
-                    } else {
-                        Log.i("TAG", "No valid Google Play Services APK found.");
+                    JSONObject obj = new JSONObject();
+                    try {
+                        obj.put("email", username.getText().toString());
+                        obj.put("password", password.getText().toString());
+                        obj.put("uuid", uniquekey);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
+
+                    String json = obj.toString();
+
+                    Log.i("JsonOBj", json);
+                    try {
+                        TypedInput in = new TypedByteArray("application/json", json.getBytes("UTF-8"));
+
+                        AvaliableJobsAPI.getInstance().getService().getToken(in, new Callback<String>() {
+                            @Override
+                            public void success(String s, Response response) {
+
+                                String token = null;
+
+                                try{
+
+                                    JSONObject data = new JSONObject(s);
+                                    if(data.getString("token") != null){
+                                        SharedPreferences sPref = getApplicationContext().getSharedPreferences(Config.TOKEN_PREF, MODE_PRIVATE);
+                                        SharedPreferences.Editor editor = sPref.edit();
+                                        token = data.getString("token");
+                                        editor.putString(Config.TOKEN, token);
+                                        editor.commit();
+                                        Log.i("TOKEN", token);
+
+                                        //register to GCM
+                                        if (checkPlayServices()) {
+                                            gcm = GoogleCloudMessaging.getInstance(context);
+                                            regid = getRegistrationId(LoginActivity.this);
+
+                                            if (regid.isEmpty() || regid.equals("")) {
+                                                registerInBackground(token);
+                                            }
+                                        } else {
+                                            Log.i("TAG", "No valid Google Play Services APK found.");
+                                        }
+
+                                    }else{
+
+                                        /*final Dialog dialog = new Dialog(LoginActivity.this);
+                                        dialog.setTitle("");
+                                        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                                        dialog.setContentView(R.layout.custom_dialog_textview);
+                                        dialog.setCancelable(true);
+                                        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+
+                                        TextView dTitle = (TextView) dialog.findViewById(R.id.dialog_title);
+                                        TextView dContentText = (TextView) dialog.findViewById(R.id.dialog_contenttext);
+                                        dTitle.setTypeface(faceCicle);
+                                        dContentText.setTypeface(faceCicle);
+
+                                        dTitle.setText("");
+                                        dContentText.setText("Sorry, but an unknown error occurred while trying to connect to server");
+
+
+                                        Button dialogButton = (Button) dialog.findViewById(R.id.dialog_positive);
+                                        dialogButton.setTypeface(faceCicle);
+                                        // if button is clicked, close the custom dialog
+                                        dialogButton.setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+                                                dialog.dismiss();
+                                            }
+                                        });
+
+                                        dialog.show();*/
+
+                                        MaterialDialog dialog = new MaterialDialog.Builder(LoginActivity.this)
+                                                .title("")
+                                                .titleColor(R.color.white).contentColor(R.color.white).backgroundColorRes(R.color.dialog_background)
+                                                .content("Sorry, but an unknown error occurred while trying to connect to server")
+                                                .positiveText("OK")
+                                                .positiveColor(R.color.white)
+                                                .positiveColorRes(R.color.white)
+                                                .typeface("ciclefina", "ciclegordita")
+                                                .build();
+                                        dialog.show();
+                                    }
+
+                                }catch(JSONException exp){
+                                    exp.printStackTrace();
+                                }
+
+                                progress.setVisibility(View.INVISIBLE);
+                                progressbackground.setVisibility(View.INVISIBLE);
+
+
+
+
+                                Intent intent = new Intent(LoginActivity.this, DrawerMainActivity.class);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                startActivity(intent);
+                                finish();
+
+
+
+                            }
+
+                            @Override
+                            public void failure(RetrofitError error) {
+
+                                progress.setVisibility(View.INVISIBLE);
+                                progressbackground.setVisibility(View.INVISIBLE);
+
+                                if (error.getBody() == null) {
+                                    Toast.makeText(LoginActivity.this, "Cannot connect to server!", Toast.LENGTH_SHORT).show();
+                                } else {
+
+                                    String errmsg = error.getBody().toString();
+                                    String errcode = "";
+
+
+                                    try {
+                                        JSONObject errobj = new JSONObject(errmsg);
+
+                                        errcode = errobj.getJSONObject("err").getString("message");
+
+                                        Toast.makeText(LoginActivity.this, errcode, Toast.LENGTH_SHORT).show();
+
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+
+
+
+                                }
+
+
+                            }
+                        });
+
+                    }catch (UnsupportedEncodingException exp1){
+                        exp1.printStackTrace();
+                    }
+
+
+
 
 
 
                 }
                 else{
-                    new SweetAlertDialog(LoginActivity.this, SweetAlertDialog.WARNING_TYPE)
-                            .setTitleText("Oops...")
-                            .setContentText("Conneciton is loss!")
-                            .show();
+
+
+                    /*final Dialog dialog = new Dialog(this);
+                    dialog.setTitle("");
+                    dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                    dialog.setContentView(R.layout.custom_dialog_textview);
+                    dialog.setCancelable(true);
+                    dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+
+                    TextView dTitle = (TextView) dialog.findViewById(R.id.dialog_title);
+                    TextView dContentText = (TextView) dialog.findViewById(R.id.dialog_contenttext);
+                    dTitle.setTypeface(faceCicle);
+                    dContentText.setTypeface(faceCicle);
+
+                    dTitle.setText("");
+                    dContentText.setText("Connection is loss!");
+
+
+                    Button dialogButton = (Button) dialog.findViewById(R.id.dialog_positive);
+                    dialogButton.setTypeface(faceCicle);
+                    // if button is clicked, close the custom dialog
+                    dialogButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            dialog.dismiss();
+                        }
+                    });
+
+                    dialog.show();*/
+
+                    MaterialDialog dialog = new MaterialDialog.Builder(LoginActivity.this)
+                            .title("")
+                            .backgroundColorRes(R.color.dialog_background)
+                            .customView(R.layout.custom_message_dialog, false)
+                            .positiveText("OK")
+                            .positiveColor(R.color.white)
+                            .positiveColorRes(R.color.white)
+                            .typeface("ciclefina", "ciclegordita")
+                            .build();
+                    dialog.show();
+
+                    TextView txt_title = (TextView) dialog.findViewById(R.id.dialog_title);
+                    TextView txt_message = (TextView) dialog.findViewById(R.id.dialog_message);
+                    txt_title.setTypeface(MyTypeFace.get(LoginActivity.this, MyTypeFace.NORMAL));
+                    txt_message.setTypeface(MyTypeFace.get(LoginActivity.this, MyTypeFace.NORMAL));
+
+                    txt_message.setText("Connection is loss!");
+
+
+
                 }
 
 
@@ -407,6 +676,167 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
 
             case R.id.login_register:
                 startActivity(new Intent(this, RegisterPage.class));
+                break;
+
+
+            case R.id.login_forgotpassword:
+
+
+                /*final Dialog dialog = new Dialog(LoginActivity.this);
+                dialog.setTitle("");
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                dialog.setContentView(R.layout.forgot_email_layout);
+                dialog.setCancelable(true);
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+
+                TextView dTitle = (TextView) dialog.findViewById(R.id.dialog_title);
+                EditText dContentText = (EditText) dialog.findViewById(R.id.et_email_forgotpwd);
+                dTitle.setTypeface(faceCicle);
+                dContentText.setTypeface(faceCicle);
+
+                dTitle.setText("Please send your registered email to us. We will send password to your email.");
+
+
+                Button dialogButton = (Button) dialog.findViewById(R.id.dialog_positive);
+                dialogButton.setTypeface(faceCicle);
+                dialogButton.setText("SEND");
+                // if button is clicked, close the custom dialog
+                dialogButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        EditText et_email = (EditText) dialog.findViewById(R.id.et_email_forgotpwd);
+
+                        if (!et_email.getText().toString().equals("")) {
+
+                            AvaliableJobsAPI.getInstance().getService().forgetPassword(et_email.getText().toString(),
+                                    new Callback<String>() {
+                                        @Override
+                                        public void success(String s, Response response) {
+                                            Toast.makeText(LoginActivity.this, "We will send to your email soon", Toast.LENGTH_SHORT).show();
+                                        }
+
+                                        @Override
+                                        public void failure(RetrofitError error) {
+                                            if (error.getBody() == null) {
+                                                Toast.makeText(LoginActivity.this, "Cannot connect to server!", Toast.LENGTH_SHORT).show();
+                                            } else {
+
+                                                String errmsg = error.getBody().toString();
+                                                String errcode = "";
+
+
+                                                try {
+                                                    JSONObject errobj = new JSONObject(errmsg);
+
+                                                    errcode = errobj.getJSONObject("err").getString("message");
+
+                                                    Toast.makeText(LoginActivity.this, errcode, Toast.LENGTH_SHORT).show();
+
+                                                } catch (JSONException e) {
+                                                    e.printStackTrace();
+                                                }
+
+
+
+                                            }
+                                        }
+                                    });
+
+                        } else {
+                            Toast.makeText(LoginActivity.this, "Please Enter Email", Toast.LENGTH_SHORT).show();
+                        }
+
+
+                        dialog.dismiss();
+                    }
+                });
+
+
+
+
+                dialog.show();*/
+
+
+                MaterialDialog dialog = new MaterialDialog.Builder(this)
+                        .title("")
+                        .backgroundColorRes(R.color.primary)
+                        .customView(R.layout.forgot_email_layout, true)
+                        .positiveText("SEND")
+                        .positiveColor(R.color.white)
+                        .positiveColorRes(R.color.white)
+                        .typeface("ciclefina", "ciclegordita")
+                        .callback(new MaterialDialog.ButtonCallback() {
+                                      @Override
+                                      public void onPositive(final MaterialDialog dialog) {
+                                          super.onPositive(dialog);
+
+                                          EditText et_email = (EditText) dialog.findViewById(R.id.et_email_forgotpwd);
+
+                                          if (!et_email.getText().toString().equals("")) {
+
+                                              AvaliableJobsAPI.getInstance().getService().forgetPassword(et_email.getText().toString(),
+                                                      new Callback<String>() {
+                                                          @Override
+                                                          public void success(String s, Response response) {
+                                                              Toast.makeText(LoginActivity.this, "We will send to your email soon", Toast.LENGTH_SHORT).show();
+                                                          }
+
+                                                          @Override
+                                                          public void failure(RetrofitError error) {
+                                                              if (error.getBody() == null) {
+                                                                  Toast.makeText(LoginActivity.this, "Cannot connect to server!", Toast.LENGTH_SHORT).show();
+                                                              } else {
+
+                                                                  String errmsg = error.getBody().toString();
+                                                                  String errcode = "";
+
+
+                                                                  try {
+                                                                      JSONObject errobj = new JSONObject(errmsg);
+
+                                                                      errcode = errobj.getJSONObject("err").getString("message");
+
+                                                                      Toast.makeText(LoginActivity.this, errcode, Toast.LENGTH_SHORT).show();
+
+                                                                  } catch (JSONException e) {
+                                                                      e.printStackTrace();
+                                                                  }
+
+
+
+                                                              }
+                                                          }
+                                                      });
+
+                                          } else {
+                                              Toast.makeText(LoginActivity.this, "Please Enter Email", Toast.LENGTH_SHORT).show();
+                                          }
+
+
+                                          dialog.dismiss();
+                                      }
+
+                                      @Override
+                                      public void onNegative(MaterialDialog dialog) {
+                                          super.onNegative(dialog);
+
+                                          dialog.dismiss();
+
+                                      }
+                                  }
+
+                        )
+                        .build();
+
+
+                dialog.show();
+                EditText et_email = (EditText) dialog.findViewById(R.id.et_email_forgotpwd);
+                TextView message = (TextView) dialog.findViewById(R.id.et_email_forgotpwd_message);
+                message.setTypeface(MyTypeFace.get(LoginActivity.this, MyTypeFace.NORMAL));
+                et_email.setTypeface(MyTypeFace.get(LoginActivity.this, MyTypeFace.NORMAL));
+                message.setText("Please send your registered email to us. We will send password to your email.");
+
                 break;
         }
 

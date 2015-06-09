@@ -1,8 +1,15 @@
+
+
 <FrameLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto" >
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/main_background">R
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -11,16 +18,34 @@
         android:paddingRight="@dimen/activity_horizontal_margin"
         android:paddingTop="@dimen/activity_vertical_margin"
         android:paddingBottom="@dimen/activity_vertical_margin"
-        android:gravity="center">
+        android:gravity="center"
+        android:focusable="true" android:focusableInTouchMode="true">
+
+
+        <com.makeramen.RoundedImageView
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/update_profile_picture"
+            android:scaleType="fitCenter"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            app:riv_corner_radius="30dip"
+            app:riv_border_width="1dip"
+            app:riv_border_color="@color/primary"
+            app:riv_mutate_background="true"
+            app:riv_oval="true"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginBottom="30dp"/>
 
 
 
-        <LinearLayout
+        <!--<LinearLayout
             android:id="@+id/update_layout1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_alignParentLeft="true">
+            android:layout_alignParentLeft="true"
+            android:layout_below="@id/update_profile_picture">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -46,62 +71,144 @@
                 android:gravity="center_vertical"
                 android:text="Address :"/>
 
-        </LinearLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="38dp"
+                android:gravity="center_vertical"
+                android:text="NRC :"/>
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="38dp"
+                android:gravity="center_vertical"
+                android:text="Vehicle :"/>
+
+
+
+
+        </LinearLayout>-->
 
 
         <LinearLayout
             android:id="@+id/update_layout2"
-            android:layout_toRightOf="@id/update_layout1"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:orientation="vertical"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp">
+            android:layout_below="@id/update_profile_picture">
 
 
             <EditText
                 android:id="@+id/update_name"
-                android:layout_width="200dp"
-                android:layout_height="35dp"
+                android:layout_width="match_parent"
+                android:textSize="18sp"
+                android:background="@drawable/rounded_border2"
+                android:layout_marginTop="10dp"
+                android:padding="10dp"
+                android:layout_height="wrap_content"
+                android:hint="Name"
                 android:singleLine="true"/>
 
             <EditText
                 android:id="@+id/update_email"
-                android:layout_width="200dp"
+                android:layout_width="match_parent"
+                android:textSize="18sp"
+                android:background="@drawable/rounded_border2"
+                android:layout_marginTop="10dp"
+                android:padding="10dp"
                 android:layout_height="wrap_content"
                 android:inputType="textEmailAddress"
-                android:singleLine="true"/>
+                android:singleLine="true"
+                android:editable="false"
+                android:hint="Email"
+                android:focusable="false" />
 
 
             <EditText
 
                 android:id="@+id/update_phone"
-                android:layout_width="200dp"
+                android:layout_width="match_parent"
+                android:textSize="18sp"
+                android:background="@drawable/rounded_border2"
+                android:layout_marginTop="10dp"
+                android:padding="10dp"
                 android:layout_height="wrap_content"
                 android:inputType="phone"
+                android:hint="Phone"
                 android:singleLine="true"/>
 
 
             <EditText
 
                 android:id="@+id/update_address"
-                android:layout_width="200dp"
+                android:layout_width="match_parent"
+                android:textSize="18sp"
+                android:background="@drawable/rounded_border2"
+                android:layout_marginTop="10dp"
+                android:padding="10dp"
                 android:layout_height="wrap_content"
+                android:hint="Address"
                 android:singleLine="true" />
+
+            <EditText
+
+                android:id="@+id/update_nrc"
+                android:layout_width="match_parent"
+                android:textSize="18sp"
+                android:background="@drawable/rounded_border2"
+                android:layout_marginTop="10dp"
+                android:padding="10dp"
+                android:layout_height="wrap_content"
+                android:hint="Id Card"
+                android:singleLine="true" />
+
+
+            <EditText
+
+                android:id="@+id/update_vehicle"
+                android:layout_width="match_parent"
+                android:textSize="18sp"
+                android:background="@drawable/rounded_border2"
+                android:layout_marginTop="10dp"
+                android:padding="10dp"
+                android:layout_height="wrap_content"
+                android:hint="Vehicle"
+                android:singleLine="true" />
+
+
+
+
 
         </LinearLayout>
 
+
+
         <TextView
             android:id="@+id/update_button"
-            android:layout_width="150dp"
-            android:layout_height="45dp"
-            android:text="Update"
-            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
             android:background="@drawable/loginselector"
+            android:text="Update"
+            android:layout_below="@id/update_layout2"
+            android:gravity="center"
             android:layout_marginTop="10dp"
+            android:layout_marginBottom="8dp"
             android:layout_alignRight="@id/update_layout2"
-            android:layout_below="@id/update_layout2"/>
+            android:textSize="17sp"
+            android:padding="10dp"
+            android:textColor="@android:color/white"/>
 
     </RelativeLayout>
+
+    </ScrollView>
+
+    <View
+        android:id="@+id/update_progresswheel_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#99d3d3d3"
+        android:visibility="invisible"/>
+
 
     <com.pnikosis.materialishprogress.ProgressWheel
         android:id="@+id/update_progress_wheel"
@@ -113,3 +220,4 @@
         android:visibility="invisible"/>
 
 </FrameLayout>
+
