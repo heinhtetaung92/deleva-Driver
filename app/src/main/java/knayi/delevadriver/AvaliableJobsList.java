@@ -1,12 +1,9 @@
 package knayi.delevadriver;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -17,8 +14,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,7 +32,6 @@ import org.json.JSONObject;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
-
 
 import knayi.delevadriver.api.AvaliableJobsAPI;
 import knayi.delevadriver.model.JobItem;
@@ -224,13 +218,13 @@ public class AvaliableJobsList extends Fragment implements View.OnClickListener,
                     if(error.getBody() == null){
 
                         MaterialDialog dialog = new MaterialDialog.Builder(getActivity())
-                                .title("")
                                 .titleColor(R.color.white)
                                 .customView(R.layout.custom_message_dialog, false)
                                 .backgroundColorRes(R.color.primary)
                                 .positiveText("OK")
                                 .positiveColor(R.color.white)
                                 .positiveColorRes(R.color.white)
+                                .typeface("ciclefina.ttf", "ciclegordita.ttf")
                                 .build();
 
 

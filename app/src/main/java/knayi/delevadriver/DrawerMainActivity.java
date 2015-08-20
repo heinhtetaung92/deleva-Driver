@@ -1,12 +1,9 @@
 package knayi.delevadriver;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
@@ -19,11 +16,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -41,7 +35,6 @@ import knayi.delevadriver.model.MyTypeFace;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
-import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 
 
 public class DrawerMainActivity extends ActionBarActivity implements AdapterView.OnItemClickListener, UpdateProfileActivity.onUpdateListener {
@@ -57,6 +50,7 @@ public class DrawerMainActivity extends ActionBarActivity implements AdapterView
     int selection = 0;
     DrawerListAdapter adp;
     SharedPreferences sPref;
+    boolean isDrawerOpen = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,7 +75,17 @@ public class DrawerMainActivity extends ActionBarActivity implements AdapterView
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawerlayout);
         mDrawerList = (ListView) findViewById(R.id.drawerlist);
 
-        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar, R.string.app_name, R.string.app_name);
+        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar, R.string.app_name, R.string.app_name){
+            public void onDrawerSlide(View drawerView, float slideOffset) {
+                if(slideOffset > .55 && !isDrawerOpen){
+                    onDrawerOpened(drawerView);
+                    isDrawerOpen = true;
+                } else if(slideOffset < .45 && isDrawerOpen) {
+                    onDrawerClosed(drawerView);
+                    isDrawerOpen = false;
+                }
+            }
+        };
         mDrawerLayout.setDrawerListener(mDrawerToggle);
 
         draweritemlist = Arrays.asList(new String[]{"Jobs", "Profile", "Pricing Details", "Contact Us", "About Us", "Log Out"});
@@ -236,12 +240,11 @@ public class DrawerMainActivity extends ActionBarActivity implements AdapterView
 
 
                  MaterialDialog dialog = new MaterialDialog.Builder(this)
-                    .title("")
                     .customView(R.layout.custom_message_dialog, false)
                     .positiveText("OK")
                     .positiveColorRes(android.R.color.white)
                     .backgroundColorRes(R.color.primary)
-                    .typeface("ciclefina", "ciclegordita")
+                    .typeface("ciclefina.ttf", "ciclegordita.ttf")
                     .callback(new MaterialDialog.ButtonCallback() {
                         @Override
                         public void onPositive(final MaterialDialog dialog) {

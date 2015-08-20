@@ -217,13 +217,10 @@ public class UpdateProfileActivity extends ActionBarActivity implements View.OnC
                 dialog.show();*/
 
                 final MaterialDialog dialog = new MaterialDialog.Builder(UpdateProfileActivity.this)
-
-
-                        .title("")
                         .backgroundColorRes(R.color.primary)
                         .customView(R.layout.image_chose_dialog, true)
                         .positiveText("")
-                        .typeface("ciclefina", "ciclegordita")
+                        .typeface("ciclefina.ttf", "ciclegordita.ttf")
                                 //.negativeText(android.R.string.cancel)
                         .callback(new MaterialDialog.ButtonCallback() {
                             @Override
@@ -439,13 +436,12 @@ public class UpdateProfileActivity extends ActionBarActivity implements View.OnC
             dialog.show();*/
 
             MaterialDialog dialog = new MaterialDialog.Builder(UpdateProfileActivity.this)
-                    .title("")
                     .customView(R.layout.custom_message_dialog, false)
                     .positiveText("OK")
                     .positiveColor(android.R.color.white)
                     .positiveColorRes(android.R.color.white)
                     .backgroundColorRes(R.color.tranprimary)
-                    .typeface("ciclefina", "ciclegordita")
+                    .typeface("ciclefina.ttf", "ciclegordita.ttf")
                     .build();
             dialog.show();
 

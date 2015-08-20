@@ -1,21 +1,16 @@
 package knayi.delevadriver;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
-import android.graphics.Typeface;
-import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Build;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.View;
-import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -241,13 +236,12 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
             dialog.show();*/
 
             MaterialDialog dialog = new MaterialDialog.Builder(this)
-                    .title("")
                     .backgroundColorRes(R.color.primary)
                     .customView(R.layout.custom_message_dialog, false)
                     .positiveText("OK")
                     .positiveColor(R.color.white)
                     .positiveColorRes(R.color.white)
-                    .typeface("ciclefina", "ciclegordita")
+                    .typeface("ciclefina.ttf", "ciclegordita.ttf")
                     .build();
 
             dialog.show();
@@ -438,13 +432,12 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
                     dialog.show();*/
 
                     MaterialDialog dialog = new MaterialDialog.Builder(this)
-                            .title("")
                             .backgroundColorRes(R.color.primary)
                             .customView(R.layout.custom_message_dialog, false)
                             .positiveText("OK")
                             .positiveColor(R.color.white)
                             .positiveColorRes(R.color.white)
-                            .typeface("ciclefina", "ciclegordita")
+                            .typeface("ciclefina.ttf", "ciclegordita.ttf")
                             .build();
                     dialog.show();
 
@@ -544,13 +537,12 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
                                         dialog.show();*/
 
                                         MaterialDialog dialog = new MaterialDialog.Builder(LoginActivity.this)
-                                                .title("")
                                                 .titleColor(R.color.white).contentColor(R.color.white).backgroundColorRes(R.color.dialog_background)
                                                 .content("Sorry, but an unknown error occurred while trying to connect to server")
                                                 .positiveText("OK")
                                                 .positiveColor(R.color.white)
                                                 .positiveColorRes(R.color.white)
-                                                .typeface("ciclefina", "ciclegordita")
+                                                .typeface("ciclefina.ttf", "ciclegordita.ttf")
                                                 .build();
                                         dialog.show();
                                     }
@@ -650,13 +642,12 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
                     dialog.show();*/
 
                     MaterialDialog dialog = new MaterialDialog.Builder(LoginActivity.this)
-                            .title("")
                             .backgroundColorRes(R.color.dialog_background)
                             .customView(R.layout.custom_message_dialog, false)
                             .positiveText("OK")
                             .positiveColor(R.color.white)
                             .positiveColorRes(R.color.white)
-                            .typeface("ciclefina", "ciclegordita")
+                            .typeface("ciclefina.ttf", "ciclegordita.ttf")
                             .build();
                     dialog.show();
 
@@ -759,13 +750,12 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
 
 
                 MaterialDialog dialog = new MaterialDialog.Builder(this)
-                        .title("")
                         .backgroundColorRes(R.color.primary)
                         .customView(R.layout.forgot_email_layout, true)
                         .positiveText("SEND")
                         .positiveColor(R.color.white)
                         .positiveColorRes(R.color.white)
-                        .typeface("ciclefina", "ciclegordita")
+                        .typeface("ciclefina.ttf", "ciclegordita.ttf")
                         .callback(new MaterialDialog.ButtonCallback() {
                                       @Override
                                       public void onPositive(final MaterialDialog dialog) {

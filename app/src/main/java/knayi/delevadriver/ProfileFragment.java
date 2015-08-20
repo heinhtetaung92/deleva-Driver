@@ -1,24 +1,16 @@
 package knayi.delevadriver;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
+import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -26,7 +18,6 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.getbase.floatingactionbutton.FloatingActionButton;
-import com.makeramen.RoundedImageView;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -35,10 +26,10 @@ import org.json.JSONObject;
 
 import knayi.delevadriver.api.AvaliableJobsAPI;
 import knayi.delevadriver.model.MyTypeFace;
+import knayi.delevadriver.model.RoundedImageView;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
-import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 
 
 public class ProfileFragment extends Fragment implements View.OnClickListener {
@@ -381,7 +372,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                     .positiveColorRes(R.color.white)
                     .negativeText("CANCEL")
                     .negativeColorRes(R.color.white)
-                    .typeface("ciclefina", "ciclegordita")
+                    .typeface("ciclefina.ttf", "ciclegordita.ttf")
                     .callback(new MaterialDialog.ButtonCallback() {
                                   @Override
                                   public void onPositive(final MaterialDialog dialog) {

@@ -47,7 +47,18 @@
         android:focusable="true" android:focusableInTouchMode="true">
 
 
-        <com.makeramen.RoundedImageView
+        <knayi.delevadriver.model.RoundedImageView
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/register_profile_picture"
+            android:scaleType="centerCrop"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginBottom="30dp"
+            android:src="@drawable/blank_profile"/>
+
+        <!--<com.makeramen.RoundedImageView
             xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/register_profile_picture"
             android:scaleType="fitCenter"
@@ -60,7 +71,8 @@
             app:riv_oval="true"
             android:layout_centerHorizontal="true"
             android:layout_alignParentTop="true"
-            android:layout_marginBottom="30dp"/>
+            android:layout_marginBottom="30dp"
+            android:src="@drawable/blank_profile"/>-->
 
 
         <!--<LinearLayout

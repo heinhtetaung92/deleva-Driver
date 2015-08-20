@@ -17,13 +17,10 @@
 package knayi.delevadriver;
 
 import android.app.AlarmManager;
-import android.app.Dialog;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.SystemClock;
@@ -34,11 +31,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -59,7 +53,6 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.nineoldandroids.view.ViewHelper;
 import com.pnikosis.materialishprogress.ProgressWheel;
 import com.squareup.picasso.Picasso;
 
@@ -900,7 +893,6 @@ public class JobDetailActivity extends ActionBarActivity implements ObservableSc
 
 
                     MaterialDialog dialog = new MaterialDialog.Builder(this)
-                            .title("")
                             .titleColor(R.color.white)
                             .customView(R.layout.reject_layout, true)
                             .positiveText("REJECT")
@@ -909,7 +901,7 @@ public class JobDetailActivity extends ActionBarActivity implements ObservableSc
                             .negativeText("CANCEL")
                             .negativeColorRes(R.color.white)
                             .backgroundColorRes(R.color.primary)
-                            .typeface("ciclefina", "ciclegordita")
+                            .typeface("ciclefina.ttf", "ciclegordita.ttf")
                             .callback(new MaterialDialog.ButtonCallback() {
                                           @Override
                                           public void onPositive(final MaterialDialog dialog) {
@@ -1096,7 +1088,7 @@ public class JobDetailActivity extends ActionBarActivity implements ObservableSc
                             .positiveColor(R.color.white)
                             .positiveColorRes(R.color.white)
                             .backgroundColorRes(R.color.primary)
-                            .typeface("ciclefina", "ciclegordita")
+                            .typeface("ciclefina.ttf", "ciclegordita.ttf")
                             .build();
                     dialog.show();
 
@@ -1246,7 +1238,6 @@ public class JobDetailActivity extends ActionBarActivity implements ObservableSc
 
 
                     MaterialDialog dialog = new MaterialDialog.Builder(this)
-                            .title("")
                             .titleColor(R.color.white)
                             .customView(R.layout.custom_request_message_dialog, true)
                             .positiveText("SEND")
@@ -1255,7 +1246,7 @@ public class JobDetailActivity extends ActionBarActivity implements ObservableSc
                             .negativeText("CANCEL")
                             .negativeColorRes(R.color.white)
                             .backgroundColorRes(R.color.primary)
-                            .typeface("ciclefina", "ciclegordita")
+                            .typeface("ciclefina.ttf", "ciclegordita.ttf")
                             .callback(new MaterialDialog.ButtonCallback() {
                                           @Override
                                           public void onPositive(MaterialDialog dialog) {
@@ -1408,7 +1399,7 @@ public class JobDetailActivity extends ActionBarActivity implements ObservableSc
                         .negativeText("CANCEL")
                         .negativeColorRes(R.color.white)
                         .backgroundColorRes(R.color.primary)
-                        .typeface("ciclefina", "ciclegordita")
+                        .typeface("ciclefina.ttf", "ciclegordita.ttf")
                         .callback(new MaterialDialog.ButtonCallback() {
                                       @Override
                                       public void onPositive(final MaterialDialog dialog) {

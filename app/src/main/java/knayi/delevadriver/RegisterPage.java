@@ -1,33 +1,27 @@
 package knayi.delevadriver;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.ActivityNotFoundException;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,7 +36,6 @@ import com.kbeanie.imagechooser.api.ChooserType;
 import com.kbeanie.imagechooser.api.ChosenImage;
 import com.kbeanie.imagechooser.api.ImageChooserListener;
 import com.kbeanie.imagechooser.api.ImageChooserManager;
-import com.makeramen.RoundedImageView;
 import com.pnikosis.materialishprogress.ProgressWheel;
 import com.soundcloud.android.crop.Crop;
 
@@ -53,11 +46,11 @@ import java.io.File;
 
 import knayi.delevadriver.api.AvaliableJobsAPI;
 import knayi.delevadriver.model.MyTypeFace;
+import knayi.delevadriver.model.RoundedImageView;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import retrofit.mime.TypedFile;
-import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 
 
 public class RegisterPage extends ActionBarActivity implements View.OnClickListener,
@@ -170,9 +163,9 @@ public class RegisterPage extends ActionBarActivity implements View.OnClickListe
             startLocationUpdates();
         }
 
-        profile_picture.setImageResource(R.drawable.blank_profile);
+        /*profile_picture.setImageResource(R.drawable.blank_profile);
         profile_picture.setAdjustViewBounds(true);
-        profile_picture.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        profile_picture.setScaleType(ImageView.ScaleType.CENTER_CROP);*/
 
 
         termsLink.setOnClickListener(new View.OnClickListener() {
@@ -187,13 +180,9 @@ public class RegisterPage extends ActionBarActivity implements View.OnClickListe
             public void onClick(View v) {
 
                 final MaterialDialog dialog = new MaterialDialog.Builder(RegisterPage.this)
-
-
-                        .title("")
                         .backgroundColorRes(R.color.primary)
                         .customView(R.layout.image_chose_dialog, true)
-                        .positiveText("")
-                        .typeface("ciclefina", "ciclegordita")
+                        .typeface("ciclefina.ttf", "ciclegordita.ttf")
                                 //.negativeText(android.R.string.cancel)
                         .callback(new MaterialDialog.ButtonCallback() {
                             @Override
@@ -344,13 +333,12 @@ public class RegisterPage extends ActionBarActivity implements View.OnClickListe
                 dialog.show();*/
 
                 MaterialDialog dialog = new MaterialDialog.Builder(RegisterPage.this)
-                        .title("")
                         .backgroundColorRes(R.color.primary)
                         .customView(R.layout.custom_message_dialog, false)
                         .positiveText("OK")
                         .positiveColor(R.color.white)
                         .positiveColorRes(R.color.white)
-                        .typeface("ciclefina", "ciclegordita")
+                        .typeface("ciclefina.ttf", "ciclegordita.ttf")
                         .build();
                 dialog.show();
 
@@ -397,13 +385,12 @@ public class RegisterPage extends ActionBarActivity implements View.OnClickListe
                 dialog.show();*/
 
                 MaterialDialog dialog = new MaterialDialog.Builder(RegisterPage.this)
-                        .title("")
                         .backgroundColorRes(R.color.primary)
                         .customView(R.layout.custom_message_dialog, false)
                         .positiveText("OK")
                         .positiveColor(R.color.white)
                         .positiveColorRes(R.color.white)
-                        .typeface("ciclefina", "ciclegordita")
+                        .typeface("ciclefina.ttf", "ciclegordita.ttf")
                         .build();
                 dialog.show();
 
@@ -672,13 +659,12 @@ public class RegisterPage extends ActionBarActivity implements View.OnClickListe
             dialog.show();*/
 
             MaterialDialog dialog = new MaterialDialog.Builder(RegisterPage.this)
-                    .title("")
                     .backgroundColorRes(R.color.primary)
                     .customView(R.layout.custom_message_dialog, false)
                     .positiveText("OK")
                     .positiveColor(R.color.white)
                     .positiveColorRes(R.color.white)
-                    .typeface("ciclefina", "ciclegordita")
+                    .typeface("ciclefina.ttf", "ciclegordita.ttf")
                     .build();
             dialog.show();
 

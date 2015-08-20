@@ -50,7 +50,6 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.nineoldandroids.view.ViewHelper;
 import com.pnikosis.materialishprogress.ProgressWheel;
 import com.squareup.picasso.Picasso;
 
@@ -58,7 +57,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -74,9 +72,6 @@ import knayi.delevadriver.updategpsLocation.GpsTrackerAlarmReceiver;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
-import retrofit.mime.TypedByteArray;
-import retrofit.mime.TypedInput;
-import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 
 
 public class AvaliableJobDetailActivity extends ActionBarActivity implements ObservableScrollViewCallbacks, View.OnClickListener, OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
@@ -852,11 +847,11 @@ public class AvaliableJobDetailActivity extends ActionBarActivity implements Obs
 
     @Override
     public void onScrollChanged(int scrollY, boolean firstScroll, boolean dragging) {
-        int baseColor = getResources().getColor(R.color.primary);
+        /*int baseColor = getResources().getColor(R.color.primary);
         float alpha = 1 - (float) Math.max(0, mParallaxImageHeight - scrollY) / mParallaxImageHeight;
         Log.i("Alpha", String.valueOf(alpha));
         setBackgroundAlpha(mToolbarView, alpha, baseColor);
-        ViewHelper.setTranslationY(mImageView, scrollY / 2);
+        ViewHelper.setTranslationY(mImageView, scrollY / 2);*/
     }
 
     @Override
@@ -1091,7 +1086,7 @@ public class AvaliableJobDetailActivity extends ActionBarActivity implements Obs
                             .positiveColor(R.color.white)
                             .positiveColorRes(R.color.white)
                             .backgroundColorRes(R.color.primary)
-                            .typeface("ciclefina", "ciclegordita")
+                            .typeface("ciclefina.ttf", "ciclegordita.ttf")
                             .build();
                     dialog.show();
 
