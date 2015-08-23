@@ -276,7 +276,7 @@
                 android:layout_marginRight="10dp"
                 android:padding="10dp"
                 android:layout_height="wrap_content"
-                android:hint="Vehicle"
+                android:hint="Vehicle No.(if applicable)"
                 android:singleLine="true" />
 
             <!--<EditText
